@@ -1,5 +1,5 @@
 /* 사이트 설정 파일 — 이 파일 하나만 고치면 홈페이지 전체가 바뀝니다. */
-window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
+window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
  "brand": {
   "name": "풀글램핑&펫글램핑",
   "nameEn": "FULL GLAMPING & PET GLAMPING",
@@ -789,10 +789,10 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "PRIVATE OCEAN VIEW BATH",
    "desc": "동마다 오션뷰 포토존 욕실을 따로 씁니다. 수영복 또는 래쉬가드를 꼭 입어 주세요. (오일·음식물 반입 금지)",
    "images": [
-    "assets/img/fac/tub-1.jpg",
-    "assets/img/fac/tub-2.jpg",
-    "assets/img/fac/tub-3.jpg",
-    "assets/img/fac/tub-4.jpg"
+    "assets/img/fac/tub-1.jpg?v=2",
+    "assets/img/fac/tub-2.jpg?v=2",
+    "assets/img/fac/tub-3.jpg?v=2",
+    "assets/img/fac/tub-4.jpg?v=2"
    ],
    "tag": "G동 8개 동"
   },
@@ -802,9 +802,9 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "SWIMMING POOL",
    "desc": "동별 개별 풀(P동)과 공용 대형 수영장이 있습니다. 수영복·래쉬가드 착용 필수(사복 입장 불가)이며, 개별 풀은 미온수로 운영됩니다.",
    "images": [
-    "assets/img/fac/pool-2.jpg",
-    "assets/img/fac/pool-3.jpg",
-    "assets/img/fac/pool-1.jpg"
+    "assets/img/fac/pool-2.jpg?v=2",
+    "assets/img/fac/pool-3.jpg?v=2",
+    "assets/img/fac/pool-1.jpg?v=2"
    ],
    "tag": "P동 개별 풀 · 공용 풀"
   },
@@ -814,10 +814,10 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "SUNRISE & NIGHT VIEW",
    "desc": "전 객실 오션뷰. 객실 안에서 동해 일출과 야경을 그대로 볼 수 있습니다.",
    "images": [
-    "assets/img/fac/sunrise-1.jpg",
-    "assets/img/fac/sunrise-2.jpg",
-    "assets/img/fac/sunrise-3.jpg",
-    "assets/img/fac/sunrise-4.jpg"
+    "assets/img/fac/sunrise-1.jpg?v=2",
+    "assets/img/fac/sunrise-2.jpg?v=2",
+    "assets/img/fac/sunrise-3.jpg?v=2",
+    "assets/img/fac/sunrise-4.jpg?v=2"
    ],
    "tag": "전 객실"
   },
@@ -827,9 +827,9 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "BARBECUE",
    "desc": "동마다 전용 바베큐장에서 바다를 보며 구워 드실 수 있습니다. 이용 17:00~19:00, 소형 20,000원 · 대형 30,000원 · 숯 추가 10,000원.",
    "images": [
-    "assets/img/fac/bbq-1.jpg",
-    "assets/img/fac/bbq-2.jpg",
-    "assets/img/fac/bbq-3.jpg"
+    "assets/img/fac/bbq-1.jpg?v=2",
+    "assets/img/fac/bbq-2.jpg?v=2",
+    "assets/img/fac/bbq-3.jpg?v=2"
    ],
    "tag": "전 객실"
   },
@@ -839,9 +839,9 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "CAMP FIRE",
    "desc": "밤에는 화로에 불을 피워 바다 소리와 함께 시간을 보낼 수 있습니다. 오일 사용과 음식물 반입은 금지입니다.",
    "images": [
-    "assets/img/fac/fire-2.jpg",
-    "assets/img/fac/fire-1.jpg",
-    "assets/img/fac/fire-3.jpg"
+    "assets/img/fac/fire-2.jpg?v=2",
+    "assets/img/fac/fire-1.jpg?v=2",
+    "assets/img/fac/fire-3.jpg?v=2"
    ],
    "tag": "공용"
   },
@@ -851,10 +851,10 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "DOG PLAYGROUND",
    "desc": "동마다 전용 놀이터가 있고, 넓은 공용 운동장도 있습니다. 목줄과 배변 처리는 보호자가 함께해 주세요.",
    "images": [
-    "assets/img/fac/dog-1.jpg",
-    "assets/img/fac/dog-2.jpg",
-    "assets/img/fac/dog-3.jpg",
-    "assets/img/fac/dog-4.jpg"
+    "assets/img/fac/dog-1.jpg?v=2",
+    "assets/img/fac/dog-2.jpg?v=2",
+    "assets/img/fac/dog-3.jpg?v=2",
+    "assets/img/fac/dog-4.jpg?v=2"
    ],
    "tag": "동별 + 공용"
   },
@@ -864,9 +864,9 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "COASTAL WALKWAY",
    "desc": "글램핑장 앞 해안도로를 따라 걷는 산책로가 있습니다. 숙소에서 걸어서 1분이면 바다입니다.",
    "images": [
-    "assets/img/fac/walk-1.jpg",
-    "assets/img/fac/walk-2.jpg",
-    "assets/img/fac/walk-3.jpg"
+    "assets/img/fac/walk-1.jpg?v=2",
+    "assets/img/fac/walk-2.jpg?v=2",
+    "assets/img/fac/walk-3.jpg?v=2"
    ],
    "tag": "도보 1분"
   },
@@ -876,9 +876,9 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "sub": "SEA FISHING",
    "desc": "숙소 앞 바다에서 낚시와 고동잡이 체험을 할 수 있습니다. 배변봉투를 비치해 두었으니 반려견과 함께 둘러보세요.",
    "images": [
-    "assets/img/fac/sea-1.jpg",
-    "assets/img/fac/sea-2.jpg",
-    "assets/img/fac/sea-3.jpg"
+    "assets/img/fac/sea-1.jpg?v=2",
+    "assets/img/fac/sea-2.jpg?v=2",
+    "assets/img/fac/sea-3.jpg?v=2"
    ],
    "tag": "숙소 앞"
   }
