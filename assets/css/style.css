@@ -242,14 +242,15 @@ ul,ol{padding:0;list-style:none}
 .fac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,36px)}
 .fac{display:block;text-align:left;padding:0}
 .fac:first-child{grid-column:span 2}
-.fac-media{overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
+.fac-media{display:block;overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
 .fac:first-child .fac-media{aspect-ratio:8/5}
 .fac-media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
 .fac:hover .fac-media img{transform:scale(1.04)}
-.fac-body{padding-top:14px}
-.fac-body h3{font-family:var(--serif);font-weight:400;font-size:15.5px;margin-top:6px}
+.fac-body{display:block;padding-top:14px}
+.fac-body h3{display:block;font-family:var(--serif);font-weight:400;font-size:15.5px;margin-top:6px}
 .fac-body em{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
-.fac-body p{margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.fac-body p{display:block;margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.75}
+.fac-body em{display:block}
 .amenity{margin-top:clamp(48px,7vw,88px);padding-top:34px;border-top:1px solid var(--line);display:grid;grid-template-columns:220px 1fr;gap:clamp(20px,4vw,60px)}
 .amenity h3{font-family:var(--serif);font-weight:400;font-size:15px}
 .amenity p{font-size:13px;color:var(--muted);margin-bottom:14px}
@@ -281,7 +282,7 @@ ul,ol{padding:0;list-style:none}
   position:absolute;left:14px;top:14px;width:34px;height:34px;border:1px solid rgba(255,255,255,.7);
   border-radius:50%;display:grid;place-items:center;color:#fff;font-size:9px;letter-spacing:.1em;
 }
-.clip-card .cp-cap{
+.clip-card .cp-cap{display:block;
   position:absolute;left:0;right:0;bottom:0;padding:46px 14px 14px;color:#fff;
   background:linear-gradient(180deg,transparent,rgba(0,0,0,.72));
 }
@@ -466,6 +467,7 @@ ul,ol{padding:0;list-style:none}
 @media (max-width:680px){
   body{font-size:14.5px}
   .hd-in{padding:16px var(--pad)}
+  .hd-en{font-size:9.5px;letter-spacing:.2em}
   .hd-tel{display:none}
   .hd-book{display:none}
   .hero{height:88svh;min-height:520px}
