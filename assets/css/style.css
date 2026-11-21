@@ -175,7 +175,7 @@ ul,ol{padding:0;list-style:none}
 .nb-close{color:var(--muted);font-size:13px;padding:4px}
 
 /* ---------------- 섹션 공통 ---------------- */
-.sec{padding:clamp(72px,11vw,140px) 0;scroll-margin-top:64px}
+.sec{padding:clamp(72px,11vw,140px) 0;scroll-margin-top:84px}
 .sec + .sec{border-top:1px solid var(--line-2)}
 .sec-head{max-width:760px;margin-bottom:clamp(36px,5vw,64px)}
 .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
@@ -242,9 +242,9 @@ ul,ol{padding:0;list-style:none}
 .fac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,36px)}
 .fac{display:block;text-align:left;padding:0}
 .fac:first-child{grid-column:span 2}
-.fac-media{display:block;overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
+.fac-media{display:block;position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
 .fac:first-child .fac-media{aspect-ratio:8/5}
-.fac-media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.fac-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
 .fac:hover .fac-media img{transform:scale(1.04)}
 .fac-body{display:block;padding-top:14px}
 .fac-body h3{display:block;font-family:var(--serif);font-weight:400;font-size:15.5px;margin-top:6px}
