@@ -1,5 +1,5 @@
 /* 사이트 설정 파일 — 이 파일 하나만 고치면 홈페이지 전체가 바뀝니다. */
-window.SITE_DATA = {
+window.SITE_DATA = window.SITE_DATA = {
  "brand": {
   "name": "풀글램핑&펫글램핑",
   "nameEn": "FULL GLAMPING & PET GLAMPING",
@@ -30,7 +30,10 @@ window.SITE_DATA = {
   "blog": "https://blog.naver.com/awmga2007",
   "instagram": "https://www.instagram.com/pet_glamping/",
   "navi": "https://sm.ok114.kr/map/go/2105D",
-  "naverMap": "https://map.naver.com/p/search/%ED%92%80%EA%B8%80%EB%9E%A8%ED%95%91%20%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91"
+  "naverMap": "https://map.naver.com/p/search/%ED%92%80%EA%B8%80%EB%9E%A8%ED%95%91%20%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91",
+  "clips": "https://m.search.naver.com/search.naver?ssc=tab.m_clip.all&where=clip&query=%EA%B5%AC%EB%A3%A1%ED%8F%AC%20%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91",
+  "blogSearch": "https://m.search.naver.com/search.naver?where=blog&query=%EA%B5%AC%EB%A3%A1%ED%8F%AC%20%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91",
+  "instaTag": "https://www.instagram.com/explore/tags/%ED%8F%AC%ED%95%AD%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91/"
  },
  "notices": [
   {
@@ -88,19 +91,13 @@ window.SITE_DATA = {
   }
  ],
  "hero": {
-  "eyebrow": "POHANG · HOMIGOT · PET GLAMPING",
-  "title": "바다까지 걸어서 1분,\n반려견과 함께하는 프라이빗 오션뷰 글램핑",
-  "sub": "포항 구룡포·호미곶. 12개 독채, 전 객실 오션뷰.\n예약·공지·주변 여행까지 이 페이지 하나로 확인하세요.",
-  "badges": [
-   "독채 12동",
-   "오션뷰 욕조",
-   "미온수 개별 풀",
-   "강아지 운동장"
-  ],
+  "eyebrow": "POHANG · HOMIGOT · 2026",
+  "title": "바다까지 한 걸음,\n반려견과의 프라이빗 스테이",
+  "sub": "포항 구룡포·호미곶. 전 객실 오션뷰 독채 12동.",
   "slides": [
-   "assets/img/hero/hero-3.jpg",
-   "assets/img/hero/hero-1.jpg",
-   "assets/img/hero/hero-2.jpg"
+   "assets/img/hero/hero-tub.jpg",
+   "assets/img/hero/hero-window.jpg",
+   "assets/img/hero/hero-night.jpg"
   ]
  },
  "quickfacts": [
@@ -156,47 +153,20 @@ window.SITE_DATA = {
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18
-    ],
-    "cover": 1,
-    "count": 18,
-    "room": [
-     7,
-     8,
-     9,
-     10,
-     11
-    ],
-    "kitchen": [
-     14
-    ],
-    "bbq": [
-     13,
-     15,
-     17
-    ],
-    "pool": [
-     1,
-     2,
-     3,
-     4,
      5
     ],
+    "cover": 1,
+    "count": 5,
+    "pool": [
+     1,
+     2
+    ],
+    "room": [
+     3,
+     4
+    ],
     "bath": [
-     12
+     5
     ]
    },
    "status": "예약가능",
@@ -230,40 +200,25 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     3,
      1,
      2,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14
-    ],
-    "cover": 3,
-    "count": 14,
-    "room": [
-     7,
-     8,
-     10,
-     11
-    ],
-    "bbq": [
-     13,
-     14
-    ],
-    "pool": [
      3,
      4,
      5
     ],
+    "cover": 1,
+    "count": 5,
+    "pool": [
+     2
+    ],
     "bath": [
-     12
+     3
+    ],
+    "view": [
+     4
+    ],
+    "room": [
+     5
     ]
    },
    "status": "예약가능",
@@ -297,41 +252,23 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     2,
      1,
+     2,
      3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13
+     5
     ],
-    "cover": 2,
-    "count": 13,
+    "cover": 1,
+    "count": 5,
+    "pool": [
+     2
+    ],
     "room": [
-     7,
-     8,
-     9,
-     10
+     3,
+     5
     ],
     "kitchen": [
-     12
-    ],
-    "bbq": [
-     13
-    ],
-    "pool": [
-     2,
-     3,
      4
-    ],
-    "bath": [
-     11
     ]
    },
    "status": "예약가능",
@@ -369,51 +306,20 @@ window.SITE_DATA = {
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18
+     5
     ],
-    "cover": 14,
-    "count": 18,
+    "cover": 1,
+    "count": 5,
     "tub": [
-     14
-    ],
-    "room": [
      1,
-     2,
      3
     ],
-    "kitchen": [
-     6,
-     7
-    ],
-    "bbq": [
-     8,
-     9,
-     15
+    "room": [
+     4,
+     5
     ],
     "view": [
-     4,
-     11,
-     12,
-     13,
-     16,
-     17,
-     18
-    ],
-    "bath": [
-     5
+     2
     ]
    },
    "status": "예약가능",
@@ -451,42 +357,18 @@ window.SITE_DATA = {
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15
+     5
     ],
-    "cover": 12,
-    "count": 15,
+    "cover": 1,
+    "count": 5,
     "room": [
      1,
      2,
-     5,
-     6,
-     7
-    ],
-    "bbq": [
-     9,
-     10
+     4
     ],
     "view": [
      3,
-     4,
-     11,
-     12,
-     13,
-     14,
-     15
-    ],
-    "bath": [
-     8
+     5
     ]
    },
    "status": "예약가능",
@@ -524,45 +406,20 @@ window.SITE_DATA = {
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15
+     5
     ],
-    "cover": 5,
-    "count": 15,
-    "tub": [
-     10
-    ],
+    "cover": 1,
+    "count": 5,
     "room": [
      1,
-     2
+     2,
+     3
     ],
     "kitchen": [
-     5,
-     6
-    ],
-    "bbq": [
-     7
+     4
     ],
     "view": [
-     3,
-     9,
-     11,
-     12,
-     13,
-     14,
-     15
-    ],
-    "bath": [
-     4
+     5
     ]
    },
    "status": "예약가능",
@@ -597,60 +454,23 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     3,
      1,
      2,
+     3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22
+     5
     ],
-    "cover": 15,
-    "count": 22,
+    "cover": 1,
+    "count": 5,
     "tub": [
-     15
-    ],
-    "room": [
-     3,
      1,
-     2,
-     4,
-     5,
-     7,
-     8
-    ],
-    "kitchen": [
-     12,
-     13
+     2
     ],
     "view": [
-     6,
-     9,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22
+     3
     ],
-    "bath": [
-     10
+    "room": [
+     5
     ]
    },
    "status": "예약가능",
@@ -683,51 +503,24 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     2,
      1,
+     2,
      3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     17,
-     18
+     4
     ],
-    "cover": 6,
-    "count": 17,
-    "tub": [
-     14
+    "cover": 1,
+    "count": 4,
+    "view": [
+     1
     ],
     "room": [
-     2,
-     1,
-     3,
-     4,
-     7
-    ],
-    "bbq": [
-     11,
-     12
-    ],
-    "view": [
-     5,
-     6,
-     9,
-     10,
-     15,
-     17,
-     18
+     2
     ],
     "bath": [
-     8
+     3
+    ],
+    "bbq": [
+     4
     ]
    },
    "status": "예약가능",
@@ -762,57 +555,24 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     3,
      1,
      2,
+     3,
      4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20
+     5
     ],
-    "cover": 11,
-    "count": 20,
-    "tub": [
-     1
+    "cover": 1,
+    "count": 5,
+    "kitchen": [
+     1,
+     2
     ],
     "room": [
-     3,
-     2,
-     4,
-     5,
-     6,
-     7
-    ],
-    "kitchen": [
-     12,
-     13,
-     14
-    ],
-    "bbq": [
-     15,
-     16
+     3
     ],
     "view": [
-     8,
-     18,
-     19,
-     20
-    ],
-    "bath": [
-     9
+     4,
+     5
     ]
    },
    "status": "예약가능",
@@ -846,57 +606,26 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     4,
      1,
      2,
      3,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21
-    ],
-    "cover": 12,
-    "count": 21,
-    "room": [
      4,
-     2,
-     3,
-     5,
-     7
+     5
+    ],
+    "cover": 1,
+    "count": 5,
+    "view": [
+     1,
+     3
+    ],
+    "room": [
+     2
     ],
     "kitchen": [
-     12,
-     13
+     4
     ],
     "bbq": [
-     14
-    ],
-    "view": [
-     9,
-     10,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21
-    ],
-    "bath": [
-     8
+     5
     ]
    },
    "status": "예약가능",
@@ -930,54 +659,24 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     4,
      1,
      2,
      3,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18
+     4
     ],
     "cover": 1,
-    "count": 18,
+    "count": 4,
     "tub": [
      1
     ],
     "room": [
-     4,
-     2,
-     3,
-     5,
-     6,
-     7
-    ],
-    "kitchen": [
-     11
+     2
     ],
     "bbq": [
-     12,
-     13,
-     14
+     3
     ],
-    "view": [
-     8,
-     16,
-     17,
-     18
-    ],
-    "bath": [
-     9
+    "kitchen": [
+     4
     ]
    },
    "status": "예약가능",
@@ -1010,32 +709,24 @@ window.SITE_DATA = {
    },
    "photos": {
     "all": [
-     2,
      1,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10
-    ],
-    "cover": 2,
-    "count": 10,
-    "room": [
-     7,
-     8
-    ],
-    "kitchen": [
-     6
-    ],
-    "bbq": [
      2,
-     1,
      3,
      4,
      5
+    ],
+    "cover": 1,
+    "count": 5,
+    "view": [
+     1,
+     2
+    ],
+    "room": [
+     3,
+     5
+    ],
+    "kitchen": [
+     4
     ]
    },
    "status": "예약가능",
@@ -1338,73 +1029,93 @@ window.SITE_DATA = {
   }
  ],
  "gallery": [
-  "assets/img/view/v1.jpg",
-  "assets/img/view/v2.jpg",
-  "assets/img/view/v3.jpg",
-  "assets/img/view/v4.jpg",
-  "assets/img/view/v5.jpg",
-  "assets/img/view/v6.jpg",
-  "assets/img/view/v7.jpg",
-  "assets/img/view/v8.jpg"
+  "assets/img/fac/sea-3.jpg",
+  "assets/img/fac/sunrise-2.jpg",
+  "assets/img/fac/dog-1.jpg",
+  "assets/img/fac/pool-1.jpg",
+  "assets/img/fac/fire-1.jpg",
+  "assets/img/fac/bbq-2.jpg"
  ],
  "reviews": [
   {
-   "id": "r1",
+   "id": "c1",
    "type": "clip",
    "show": true,
-   "title": "숙소 영상으로 먼저 보기",
-   "summary": "객실·수영장·바다를 영상으로 먼저 확인하세요.",
-   "thumb": "assets/img/hero/hero-1.jpg",
-   "url": "https://map.naver.com/p/entry/place/1200973354",
-   "author": "네이버 플레이스",
-   "date": "영상"
+   "title": "프라이빗하게 우리끼리 추억 만들구 왔어요",
+   "summary": "#포항펫글램핑 #포항오션뷰 · 서나픽",
+   "thumb": "assets/img/rev/clip1.jpg",
+   "url": "https://m.naver.com/shorts/?seedMediaId=0395D044726ECC50E3F2926C39ED21D2828D&serviceType=MOMENT",
+   "author": "서나픽",
+   "date": "2026.07"
   },
   {
-   "id": "r2",
+   "id": "c2",
    "type": "clip",
    "show": true,
-   "title": "오션뷰 욕조 영상",
-   "summary": "돔 안 욕조에서 바다를 보는 모습을 짧은 영상으로.",
-   "thumb": "assets/img/fac/tub-1.jpg",
-   "url": "https://map.naver.com/p/entry/place/1200973354",
-   "author": "네이버 클립",
-   "date": "영상"
+   "title": "파도 소리 들으며 잠드는 포항 오션뷰 글램핑",
+   "summary": "바다 전망 바베큐 · 최포키",
+   "thumb": "assets/img/rev/clip2.jpg",
+   "url": "https://m.naver.com/shorts/?seedMediaId=D2CDD1C2EE358CF18C928BA2258E70BE557C&serviceType=MOMENT",
+   "author": "최포키",
+   "date": "2026.06"
   },
   {
-   "id": "r3",
+   "id": "b1",
    "type": "blog",
    "show": true,
-   "title": "블로그 후기 모아보기",
-   "summary": "네이버 블로그에 올라온 실제 방문 후기 683건을 볼 수 있어요.",
-   "thumb": "assets/img/view/v2.jpg",
-   "url": "https://search.naver.com/search.naver?ssc=tab.blog.all&query=%ED%8E%AB%EA%B8%80%EB%9E%A8%ED%95%91",
-   "author": "네이버 블로그",
-   "date": "상시"
-  },
-  {
-   "id": "r4",
-   "type": "insta",
-   "show": true,
-   "title": "인스타그램 @pet_glamping",
-   "summary": "손님들이 남긴 사진과 짧은 영상을 모았습니다.",
-   "thumb": "assets/img/fac/dog-2.jpg",
-   "url": "https://www.instagram.com/pet_glamping/",
-   "author": "인스타그램",
-   "date": "상시"
-  },
-  {
-   "id": "r5",
-   "type": "blog",
-   "show": true,
-   "title": "네이버 리뷰 1,260건 · 별점 4.67",
-   "summary": "네이버 예약 리뷰에서 실제 후기를 확인하세요.",
-   "thumb": "assets/img/fac/bbq-1.jpg",
-   "url": "https://m.place.naver.com/accommodation/1200973354/review?businessCategory=pension",
-   "author": "네이버 예약",
+   "title": "포항펫글램핑 애견동반숙소, 100일 아기와 강아지랑 여행",
+   "summary": "100일 된 아기와 반려견 크앙이, 온 가족이 함께 다녀온 1박. 반려견 밥그릇과 배변 패드까지 준비되어 있었어요.",
+   "thumb": "assets/img/rev/b1.jpg",
+   "url": "https://m.blog.naver.com/sae911123/224486314557",
+   "author": "포항댁의 일상",
    "date": "2026.11"
+  },
+  {
+   "id": "b2",
+   "type": "blog",
+   "show": true,
+   "title": "포항 구룡포 글램핑 추천, 오션뷰 감성 숙소 리뷰",
+   "summary": "외부 시설부터 바다 전망, 반려견 놀이터, 수영장과 바비큐 공간까지 하나씩 담은 리뷰.",
+   "thumb": "assets/img/rev/b2.jpg",
+   "url": "https://m.blog.naver.com/yessam_00/224484842250",
+   "author": "예지소속사",
+   "date": "2026.11"
+  },
+  {
+   "id": "b3",
+   "type": "blog",
+   "show": true,
+   "title": "민찌·두찌의 첫 글램핑, 오션뷰 1박 2일",
+   "summary": "평소 펜션만 다니던 두 사람이 반려견과 처음 도전한 글램핑. 객실에서 본 바다가 가장 기억에 남았다고.",
+   "thumb": "assets/img/rev/b3.jpg",
+   "url": "https://m.blog.naver.com/hhhy3123/224461208949",
+   "author": "밍찌두찌",
+   "date": "2026.11"
+  },
+  {
+   "id": "b4",
+   "type": "blog",
+   "show": true,
+   "title": "호미곶 강아지랑 여행, 풀글램핑&펫글램핑",
+   "summary": "반려견과 함께하는 첫 1박 2일. 동별로 나뉜 독채라 산책과 휴식이 편했다는 후기.",
+   "thumb": "assets/img/rev/b4.jpg",
+   "url": "https://m.blog.naver.com/yryb007/224461406156",
+   "author": "광린로그",
+   "date": "2026.11"
+  },
+  {
+   "id": "b5",
+   "type": "blog",
+   "show": true,
+   "title": "포항 애견동반숙소 추천, 오션뷰 풀글램핑 솔직후기",
+   "summary": "호미곶 애견동반숙소로 다녀온 솔직 후기. 문만 닫으면 강아지가 나갈 곳이 없는 구조가 마음에 들었다고.",
+   "thumb": "assets/img/rev/b5.jpg",
+   "url": "https://m.blog.naver.com/yeony_bee/224450582040",
+   "author": "조용히 부지런하게",
+   "date": "2026.10"
   }
  ],
- "reviewNote": "아래 후기는 사장님이 직접 고른 실제 후기만 보입니다. 왼쪽 위 탭에서 영상(클립)부터 볼 수 있어요.",
+ "reviewNote": "실제 방문객이 남긴 클립과 블로그 후기입니다. 카드를 누르면 그 사람의 영상·글이 바로 열립니다.",
  "admin": {
   "enabled": true,
   "note": "이 화면은 사장님이 직접 쓰는 관리 화면입니다. 바꾼 내용은 이 브라우저에 저장되고, site-data.js 파일로 내려받아 올리면 모든 방문자에게 적용됩니다.",
@@ -1563,5 +1274,28 @@ window.SITE_DATA = {
    "writeLabel": "",
    "writeUrl": ""
   }
- ]
+ ],
+ "intro": {
+  "label": "PROLOGUE",
+  "statement": "바다를 마주한 12개의 독채,\n그 안에서 반려견과 함께 쉬어가는 하루.",
+  "body": "호미곶 해안도로 끝, 바다까지 걸어서 1분. 동마다 욕조와 주방, 바베큐장을 따로 쓰는 프라이빗 글램핑입니다. 아침에는 객실 창으로 일출이, 저녁에는 테라스로 일몰이 들어옵니다.",
+  "stats": [
+   [
+    "12",
+    "독채"
+   ],
+   [
+    "8",
+    "오션뷰 욕조"
+   ],
+   [
+    "3",
+    "개별 미온수 풀"
+   ],
+   [
+    "1분",
+    "바다까지 도보"
+   ]
+  ]
+ }
 };

@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var STORE_KEY = 'pg_site_data_v1';
+  var STORE_KEY = 'pg_site_data_v2';
   var UNLOCK_KEY = 'pg_admin_unlocked';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -555,7 +555,7 @@
       var title = ($('#newTitle').value || '').trim();
       var summary = ($('#newSummary').value || '').trim();
       var url = ($('#newUrl').value || '').trim();
-      var thumb = ($('#newThumb').value || '').trim() || 'assets/img/hero/hero-2.jpg';
+      var thumb = ($('#newThumb').value || '').trim() || 'assets/img/hero/hero-window.jpg';
       if (!title || !url) { toast('제목과 링크 주소를 넣어 주세요.'); return; }
       D().reviews.unshift({
         id: 'r' + Date.now(), type: type, show: true, title: title, summary: summary || '사장님이 고른 후기',
