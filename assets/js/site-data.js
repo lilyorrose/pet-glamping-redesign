@@ -1,5 +1,5 @@
 /* 사이트 설정 파일 — 이 파일 하나만 고치면 홈페이지 전체가 바뀝니다. */
-window.SITE_DATA = window.SITE_DATA = {
+window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
  "brand": {
   "name": "풀글램핑&펫글램핑",
   "nameEn": "FULL GLAMPING & PET GLAMPING",
@@ -881,18 +881,6 @@ window.SITE_DATA = window.SITE_DATA = {
     "assets/img/fac/sea-3.jpg"
    ],
    "tag": "숙소 앞"
-  },
-  {
-   "id": "photo",
-   "title": "인스타그램 포토존",
-   "sub": "PHOTO ZONE",
-   "desc": "바다를 배경으로 사진을 남길 수 있는 포토존이 곳곳에 있습니다. 인스타그램 @pet_glamping 에서도 만나보세요.",
-   "images": [
-    "assets/img/fac/photo-2.jpg",
-    "assets/img/fac/photo-3.jpg",
-    "assets/img/fac/photo-1.jpg"
-   ],
-   "tag": "포토 스팟"
   }
  ],
  "amenities": {
