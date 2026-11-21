@@ -76,6 +76,8 @@
       var b = e.target.closest('button');
       if (b) goSlide(Number(b.dataset.i));
     };
+    var hl = document.querySelector('.hero-link');
+    if (hl) { hl.href = (data().links && data().links.realtimeBooking) || '#booking'; hl.target = '_blank'; hl.rel = 'noopener'; }
     if (heroTimer) clearInterval(heroTimer);
     if (slides.length > 1) {
       heroTimer = setInterval(function () {

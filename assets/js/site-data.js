@@ -686,7 +686,7 @@ window.SITE_DATA = window.SITE_DATA = {
   {
    "code": "C1",
    "name": "C1",
-   "subtitle": "독채 · 넓은 마당",
+   "subtitle": "카라반 독채 · 넓은 마당",
    "group": "C",
    "groupLabel": "C동",
    "pyeong": 10,
