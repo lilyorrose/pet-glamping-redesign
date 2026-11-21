@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사장님 통제실 — 풀글램핑&펫글램핑</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f6b74">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f6b74'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Helvetica,Arial' font-size='24' font-weight='bold' fill='white'%3EP%26G%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<!-- ================= 상단 바 ================= -->
+<header class="appbar">
+  <span class="mark">P&amp;G</span>
+  <div>
+    <h1>사장님 통제실</h1>
+    <div class="sub">풀글램핑&amp;펫글램핑 · 여기서 다 됩니다</div>
+  </div>
+  <div class="appbar-right">
+    <div class="fontctl" role="group" aria-label="글씨 크기">
+      <button type="button" data-font-set="normal" aria-pressed="true">보통</button>
+      <button type="button" data-font-set="lg" aria-pressed="false">크게</button>
+      <button type="button" data-font-set="xl" aria-pressed="false">아주 크게</button>
+    </div>
+    <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">손님 화면 보기</a>
+    <button class="btn btn-soft btn-sm" type="button" id="lockBtn">잠그기</button>
+  </div>
+</header>
+
+<!-- ================= 잠금 화면 ================= -->
+<div class="lock" id="lockScreen">
+  <div class="lock-card" id="lockCard">
+    <h2>사장님, 비밀번호 4자리를 눌러 주세요</h2>
+    <p>손님은 이 화면에 들어올 수 없습니다.</p>
+    <div class="dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
+    <div class="pin-msg" id="pinMsg"></div>
+    <div class="pinpad" id="pinPad">
+      <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button>
+      <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button>
+      <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button>
+      <button type="button" data-k="clear">지우기</button><button type="button" data-k="0">0</button><button type="button" data-k="back">←</button>
+    </div>
+    <p class="lock-tip" id="pinTip"></p>
+  </div>
+</div>
+
+<!-- ================= 통제실 본문 ================= -->
+<div class="wrap hidden" id="app">
+
+  <!-- 요약 -->
+  <section class="section" aria-label="오늘 할 일">
+    <div class="section-head"><h2>오늘 할 일</h2><span class="hint" id="todayLabel"></span></div>
+    <div class="sum-grid" id="sumGrid"></div>
+  </section>
+
+  <!-- 탭 -->
+  <div class="tabs" id="tabs" role="tablist">
+    <button type="button" role="tab" data-tab="creators" aria-selected="true">체험단 예약</button>
+    <button type="button" role="tab" data-tab="reviews" aria-selected="false">후기·검색 노출</button>
+    <button type="button" role="tab" data-tab="channels" aria-selected="false">우리 채널</button>
+    <button type="button" role="tab" data-tab="site" aria-selected="false">손님 페이지 관리</button>
+    <button type="button" role="tab" data-tab="reviewsPick" aria-selected="false">홈페이지 후기 고르기</button>
+    <button type="button" role="tab" data-tab="save" aria-selected="false">저장·설정</button>
+  </div>
+
+  <div id="panel"></div>
+</div>
+
+<!-- ================= 하단 저장 바 ================= -->
+<div class="savebar hidden" id="saveBar">
+  <a class="btn btn-soft" href="index.html" target="_blank" rel="noopener">손님 화면 보기</a>
+  <button class="btn btn-primary" type="button" id="saveBtn">저장하기</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/site-data.js"></script>
+<script src="assets/js/fontsize.js"></script>
+<script src="assets/js/admin-page.js"></script>
+</body>
+</html>
