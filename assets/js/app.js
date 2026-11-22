@@ -16,7 +16,7 @@
   };
   var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
 
-  var state = { cat: 'all', room: null, slide: 0, notice: 0, lb: { list: [], i: 0 } };
+  var state = { cat: 'all', room: null, slide: 0, heroDrag: false, notice: 0, lb: { list: [], i: 0 } };
 
   /* ---------- 데이터 ---------- */
   function data() {
@@ -58,6 +58,18 @@
 
   /* ---------- 히어로 ---------- */
   var heroTimer = null;
+  var HERO_MS = 6500;
+
+  function heroCount() { return $$('#heroSlides img').length; }
+
+  function startHeroTimer() {
+    if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
+    if (heroCount() < 2) return;
+    heroTimer = setInterval(function () {
+      if (document.hidden || state.heroDrag) return;
+      goSlide(state.slide + 1);
+    }, HERO_MS);
+  }
 
   function renderHero() {
     var h = data().hero || {};
@@ -78,24 +90,123 @@
     };
     var hl = document.querySelector('.hero-link');
     if (hl) { hl.href = (data().links && data().links.realtimeBooking) || '#booking'; hl.target = '_blank'; hl.rel = 'noopener'; }
-    if (heroTimer) clearInterval(heroTimer);
-    if (slides.length > 1) {
-      heroTimer = setInterval(function () {
-        if (!document.hidden) goSlide((state.slide + 1) % slides.length);
-      }, 6500);
-    }
+    startHeroTimer();
   }
 
-  function goSlide(i) {
+  function goSlide(i, manual) {
     var imgs = $$('#heroSlides img');
+    var n = imgs.length;
+    if (!n) return;
+    i = ((Number(i) % n) + n) % n;
     state.slide = i;
     imgs.forEach(function (img, k) { img.classList.toggle('is-on', k === i); });
     $$('#heroDots button').forEach(function (b, k) { b.setAttribute('aria-current', String(k === i)); });
     var idx = $('#heroIdx'); if (idx) idx.textContent = pad2(i + 1);
+    var strip = $('#heroSlides');
+    if (strip) {
+      strip.classList.remove('is-dragging');
+      strip.style.transform = '';
+      if (manual) {
+        strip.classList.add('is-quick');
+        setTimeout(function () { strip.classList.remove('is-quick'); }, 900);
+        startHeroTimer();
+      }
+    }
+  }
+
+  function stepHero(d) { goSlide(state.slide + d, true); }
+
+  /* 손가락 스와이프·마우스 드래그로 사진 넘기기 */
+  function initHeroGesture() {
+    var hero = document.querySelector('.hero');
+    var strip = $('#heroSlides');
+    if (!hero || !strip) return;
+
+    var START = 8, THRESH = 42, RATIO = 1.15;
+    var active = false, horiz = false, sx = 0, sy = 0;
+
+    function cancel() {
+      active = false; horiz = false; state.heroDrag = false;
+      strip.classList.remove('is-dragging');
+      strip.style.transform = '';
+    }
+
+    function down(x, y, target) {
+      if (target && target.closest('a, button')) return false;
+      if (heroCount() < 2) return false;
+      active = true; horiz = false; sx = x; sy = y;
+      state.heroDrag = true;
+      return true;
+    }
+
+    function move(x, y) {
+      if (!active) return;
+      var dx = x - sx, dy = y - sy;
+      if (!horiz) {
+        // 세로로 더 움직이면 스크롤로 보고 놓아준다
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { cancel(); return; }
+        if (Math.abs(dx) < START) return;
+        horiz = true;
+        strip.classList.add('is-dragging');
+      }
+      var shift = Math.max(-72, Math.min(72, dx * 0.22));
+      strip.style.transform = 'translate3d(' + shift + 'px,0,0)';
+    }
+
+    function end(x, y) {
+      if (!active) return;
+      var dx = x - sx, dy = y - sy, wasHoriz = horiz;
+      cancel();
+      if (wasHoriz && Math.abs(dx) > THRESH && Math.abs(dx) > Math.abs(dy) * RATIO) {
+        stepHero(dx < 0 ? 1 : -1);
+      }
+    }
+
+    if (window.PointerEvent) {
+      hero.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        if (!down(e.clientX, e.clientY, e.target)) return;
+        try { hero.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      hero.addEventListener('pointermove', function (e) {
+        if (active) move(e.clientX, e.clientY);
+      });
+      hero.addEventListener('pointerup', function (e) {
+        if (active) end(e.clientX, e.clientY);
+      });
+      hero.addEventListener('pointercancel', cancel);
+    } else {
+      hero.addEventListener('touchstart', function (e) {
+        var t = e.touches[0]; if (t) down(t.clientX, t.clientY, e.target);
+      }, { passive: true });
+      hero.addEventListener('touchmove', function (e) {
+        var t = e.touches[0]; if (t) move(t.clientX, t.clientY);
+      }, { passive: true });
+      hero.addEventListener('touchend', function (e) {
+        var t = e.changedTouches[0]; if (t) end(t.clientX, t.clientY);
+      });
+      hero.addEventListener('touchcancel', cancel);
+      hero.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        if (down(e.clientX, e.clientY, e.target)) e.preventDefault();
+      });
+      hero.addEventListener('mousemove', function (e) {
+        if (active) move(e.clientX, e.clientY);
+      });
+      hero.addEventListener('mouseup', function (e) {
+        if (active) end(e.clientX, e.clientY);
+      });
+      hero.addEventListener('mouseleave', function () { if (active) cancel(); });
+    }
+
+    $('#heroPrev').addEventListener('click', function () { stepHero(-1); });
+    $('#heroNext').addEventListener('click', function () { stepHero(1); });
   }
 
   /* ---------- 공지 ---------- */
   var noticeTimer = null;
+  var noticeOpen = false;
+  var noticeReturnFocus = null;
 
   function noticeList() {
     return (data().notices || []).filter(function (n) { return n.show !== false; });
@@ -105,10 +216,13 @@
     var list = noticeList();
     var bar = $('#noticebar');
     if (!list.length) { bar.classList.add('hidden'); return; }
+    bar.classList.remove('hidden');
     $('#nbView').innerHTML = list.map(function (n, i) {
-      return '<div class="nb-item' + (i === 0 ? ' is-on' : '') + '" data-i="' + i + '">' +
-        '<strong>' + esc(n.badge || '') + '</strong><span>' + esc(n.text || '') + '</span>' +
-        (n.link ? '<a class="nb-link" href="' + esc(n.link) + '">' + esc(n.linkText || '보기') + '</a>' : '') +
+      var on = i === 0;
+      return '<div class="nb-item' + (on ? ' is-on' : '') + '" data-i="' + i + '" aria-hidden="' + (on ? 'false' : 'true') + '">' +
+        '<strong>' + esc(n.badge || '') + '</strong>' +
+        '<span class="nb-text">' + esc(n.text || '') + '</span>' +
+        '<span class="nb-more" aria-hidden="true">자세히<i>→</i></span>' +
         '</div>';
     }).join('');
     $('#nbDots').innerHTML = list.length > 1 ? list.map(function (_, i) {
@@ -122,15 +236,60 @@
     if (noticeTimer) clearInterval(noticeTimer);
     if (list.length > 1) {
       noticeTimer = setInterval(function () {
-        if (!document.hidden) showNotice((state.notice + 1) % noticeList().length);
+        if (!document.hidden && !noticeOpen) showNotice((state.notice + 1) % noticeList().length);
       }, 5600);
     }
+    showNotice(0);
   }
 
   function showNotice(i) {
-    $$('#nbView .nb-item').forEach(function (el, k) { el.classList.toggle('is-on', k === i); });
+    $$('#nbView .nb-item').forEach(function (el, k) {
+      var on = k === i;
+      el.classList.toggle('is-on', on);
+      el.setAttribute('aria-hidden', String(!on));
+    });
     $$('#nbDots button').forEach(function (el, k) { el.setAttribute('aria-current', String(k === i)); });
+    var cur = $('#nbView .nb-item.is-on .nb-text');
+    var view = $('#nbView');
+    if (view) view.setAttribute('aria-label', '공지: ' + (cur ? cur.textContent : '') + ' — 전체 보기');
     state.notice = i;
+  }
+
+  function openNotices() {
+    if (noticeOpen) return;
+    var list = noticeList();
+    if (!list.length) return;
+    var body = $('#noticeBody');
+    body.innerHTML = list.map(function (n) {
+      return '<article class="nm-item">' +
+        (n.badge ? '<span class="nm-badge">' + esc(n.badge) + '</span>' : '') +
+        '<strong class="nm-text">' + esc(n.text || '') + '</strong>' +
+        (n.detail ? '<p class="nm-detail">' + esc(n.detail) + '</p>' : '') +
+        (n.link ? '<a class="nm-link" href="' + esc(n.link) + '">' + esc(n.linkText || '자세히 보기') + '<span aria-hidden="true">→</span></a>' : '') +
+        '</article>';
+    }).join('');
+    noticeReturnFocus = document.activeElement;
+    noticeOpen = true;
+    $('#noticeBack').classList.add('is-open');
+    $('#noticeModal').classList.add('is-open');
+    $('#noticeModal').setAttribute('aria-hidden', 'false');
+    $('#nbView').setAttribute('aria-expanded', 'true');
+    lockScroll();
+    body.scrollTop = 0;
+    $('#noticeClose').focus({ preventScroll: true });
+  }
+
+  function closeNotices() {
+    if (!noticeOpen) return;
+    noticeOpen = false;
+    $('#noticeBack').classList.remove('is-open');
+    $('#noticeModal').classList.remove('is-open');
+    $('#noticeModal').setAttribute('aria-hidden', 'true');
+    $('#nbView').setAttribute('aria-expanded', 'false');
+    unlockScroll();
+    if (noticeReturnFocus && noticeReturnFocus.focus) {
+      try { noticeReturnFocus.focus({ preventScroll: true }); } catch (e) {}
+    }
   }
 
   /* ---------- 프롤로그 ---------- */
@@ -432,8 +591,28 @@
 
     $('#nbClose').addEventListener('click', function () {
       $('#noticebar').classList.add('hidden');
-      if (noticeTimer) clearInterval(noticeTimer);
+      if (noticeTimer) { clearInterval(noticeTimer); noticeTimer = null; }
     });
+
+    // 공지 바 → 전체 공지 보기
+    $('#nbView').addEventListener('click', openNotices);
+    $('#nbView').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        openNotices();
+      }
+    });
+    $('#noticeBack').addEventListener('click', closeNotices);
+    $('#noticeClose').addEventListener('click', closeNotices);
+    $('#noticeFootClose').addEventListener('click', closeNotices);
+    $('#noticeBody').addEventListener('click', function (e) {
+      if (e.target.closest('a')) closeNotices();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && noticeOpen) closeNotices();
+    });
+
+    initHeroGesture();
 
     $('#catChips').addEventListener('click', function (e) {
       var b = e.target.closest('[data-cat]');
