@@ -175,6 +175,11 @@
         if (active) end(e.clientX, e.clientY);
       });
       hero.addEventListener('pointercancel', cancel);
+      // 손을 화면 밖에서 떼도 자동 넘김이 멈춰 있지 않도록
+      window.addEventListener('pointerup', function (e) {
+        if (active) end(e.clientX, e.clientY);
+      });
+      window.addEventListener('blur', function () { if (active) cancel(); });
     } else {
       hero.addEventListener('touchstart', function (e) {
         var t = e.touches[0]; if (t) down(t.clientX, t.clientY, e.target);
