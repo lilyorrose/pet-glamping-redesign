@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@300;400&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 <link rel="preload" as="image" href="assets/img/hero/hero-tub.jpg">
 </head>
 <body>
@@ -101,6 +101,47 @@
     </div>
     <div class="wrap">
       <ul class="stats" id="introStats"></ul>
+    </div>
+  </section>
+
+  <!-- ================= 드론 영상 ================= -->
+  <section class="sec film" id="film">
+    <div class="wrap">
+      <div class="film-head">
+        <div>
+          <p class="label">FILM <span>DRONE</span></p>
+          <h2 class="sec-title">바다와 맞닿은 열두 동을,<br>하늘에서</h2>
+        </div>
+        <p class="film-sub">구룡포 해안도로를 따라 늘어선 독채와 그 앞바다를 드론으로 담았습니다. 재생을 누르면 12초 동안 전경이 이어집니다.</p>
+      </div>
+      <figure class="film-fig">
+        <div class="film-frame">
+          <video class="film-video" id="filmVideo" controls playsinline muted preload="metadata"
+                 poster="assets/video/full-glamping-drone-poster.jpg" width="1280" height="720"
+                 aria-label="풀글램핑&펫글램핑 드론 전경 영상, 12초">
+            <source src="assets/video/full-glamping-drone-720.mp4" type="video/mp4">
+            영상을 재생할 수 없는 브라우저입니다. <a href="https://m.blog.naver.com/awmga2007/223415301614" target="_blank" rel="noopener">블로그에서 보기</a>
+          </video>
+        </div>
+        <figcaption class="film-cap">
+          <span>2024년 봄 드론 촬영 · 네이버 블로그 「펫글램핑 외부전경 드론여행」</span>
+          <a href="https://m.blog.naver.com/awmga2007/223415301614" target="_blank" rel="noopener">원본 글 보기 →</a>
+        </figcaption>
+      </figure>
+      <ul class="film-links">
+        <li><a href="https://m.blog.naver.com/awmga2007/223415301614" target="_blank" rel="noopener">
+          <span class="film-meta">영상 5편 · 2024.04</span>
+          <strong>외부 전경 드론여행</strong>
+        </a></li>
+        <li><a href="https://m.blog.naver.com/awmga2007/224171396378" target="_blank" rel="noopener">
+          <span class="film-meta">숙소 안팎 영상 · 2026.02</span>
+          <strong>사진보다 실제가 더 좋은 이유</strong>
+        </a></li>
+        <li><a href="https://m.blog.naver.com/awmga2007/223342363239" target="_blank" rel="noopener">
+          <span class="film-meta">앞바다 일출 · 15초</span>
+          <strong>해 뜰 때의 바다</strong>
+        </a></li>
+      </ul>
     </div>
   </section>
 
@@ -310,8 +351,8 @@
   <button class="lb-next" type="button" id="lbNext" aria-label="다음 사진">›</button>
 </div>
 
-<script src="assets/js/site-data.js?v=6"></script>
+<script src="assets/js/site-data.js?v=7"></script>
 <script src="assets/js/fontsize.js?v=2"></script>
-<script src="assets/js/app.js?v=6"></script>
+<script src="assets/js/app.js?v=7"></script>
 </body>
 </html>

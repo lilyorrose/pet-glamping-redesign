@@ -786,7 +786,7 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
   {
    "id": "tub",
    "title": "프라이빗 오션뷰 욕실",
-   "sub": "PRIVATE OCEAN VIEW BATH",
+   "sub": "OCEAN VIEW BATH",
    "desc": "동마다 오션뷰 포토존 욕실을 따로 씁니다. 수영복 또는 래쉬가드를 꼭 입어 주세요. (오일·음식물 반입 금지)",
    "images": [
     "assets/img/fac/tub-1.jpg?v=2",

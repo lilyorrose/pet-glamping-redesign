@@ -330,22 +330,56 @@
   }
 
   function roomCard(r) {
-    var cover = photoUrl(r.code, r.photos.cover || 1, false);
+    var photos = (r.photos.all || [r.photos.cover || 1]).slice(0, 6);
+    var cover = photoUrl(r.code, photos[0], false);
     var meta = [];
     meta.push('기준 ' + r.base + '인 · 최대 ' + r.max + '인');
     meta.push(r.pyeong + '평');
     if (r.tub) meta.push('오션뷰 욕조');
     if (r.pool) meta.push('개별 풀');
-    return '<button class="card" type="button" data-room="' + esc(r.code) + '" aria-label="' + esc(r.name + ' ' + r.subtitle) + ' 자세히 보기">' +
-      '<div class="card-media"><img src="' + cover + '" alt="' + esc(r.name + ' 객실') + '" loading="lazy"></div>' +
-      '<div class="card-body">' +
-        '<div class="card-row">' +
-          '<span class="card-name"><em>' + esc(r.name) + '</em>' + esc(r.subtitle.replace(/\s*·.*/, '')) + '</span>' +
-          '<span class="card-price"><small>주중</small>' + krw(r.price.weekday) + '원~</span>' +
+    var label = r.name + ' ' + r.subtitle;
+    return '<article class="card" data-room="' + esc(r.code) + '">' +
+      '<div class="card-media" data-media>' +
+        '<div class="card-track" data-track data-i="0">' +
+          photos.map(function (n, i) {
+            return '<img class="card-slide" src="' + photoUrl(r.code, n, false) + '" alt="' + esc(r.name + ' 객실 사진 ' + (i + 1)) + '"' +
+              ' loading="lazy" draggable="false"' + (i === 0 ? '' : ' aria-hidden="true"') + '>';
+          }).join('') +
         '</div>' +
-        '<p class="card-meta">' + meta.map(esc).join('<i>·</i>') + '</p>' +
-        '<span class="card-line">사진 · 요금 보기 <span aria-hidden="true">→</span></span>' +
-      '</div></button>';
+        (photos.length > 1 ?
+          '<div class="card-dots" role="group" aria-label="' + esc(r.name) + ' 사진 넘기기">' +
+            photos.map(function (_, i) {
+              return '<button class="card-dot" type="button" data-dot="' + i + '" aria-label="' + esc(r.name + ' 사진 ' + (i + 1)) + '"' +
+                ' aria-current="' + (i === 0) + '"' + (i === 0 ? '' : ' tabindex="-1"') + '></button>';
+            }).join('') +
+          '</div>' : '') +
+      '</div>' +
+      '<div class="card-body">' +
+        '<button class="card-open" type="button" data-open="' + esc(r.code) + '" aria-label="' + esc(label) + ' 자세히 보기">' +
+          '<span class="card-row">' +
+            '<span class="card-name"><em>' + esc(r.name) + '</em>' + esc(r.subtitle.replace(/\s*·.*/, '')) + '</span>' +
+            '<span class="card-price"><small>주중</small>' + krw(r.price.weekday) + '원~</span>' +
+          '</span>' +
+          '<span class="card-meta">' + meta.map(esc).join('<i>·</i>') + '</span>' +
+          '<span class="card-line">사진 · 요금 보기 <span aria-hidden="true">→</span></span>' +
+        '</button>' +
+      '</div></article>';
+  }
+
+  // 카드 안 사진 넘기기
+  function goCardPhoto(media, i) {
+    var track = media.querySelector('[data-track]');
+    if (!track) return;
+    var slides = $$('.card-slide', track);
+    if (!slides.length) return;
+    i = ((Number(i) % slides.length) + slides.length) % slides.length;
+    track.dataset.i = String(i);
+    track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
+    slides.forEach(function (s, k) { s.setAttribute('aria-hidden', String(k !== i)); });
+    $$('[data-dot]', media).forEach(function (d, k) {
+      d.setAttribute('aria-current', String(k === i));
+      d.tabIndex = k === i ? 0 : -1;
+    });
   }
 
   function renderRooms() {
@@ -355,6 +389,78 @@
     $('#resultCount').textContent = list.length + '개의 객실';
     $('#roomGrid').innerHTML = list.length ? list.map(roomCard).join('') :
       '<div class="empty-state">조건에 맞는 객실이 없습니다.</div>';
+  }
+
+  /* 손가락으로 카드 사진 넘기기 (상세 모달과 충돌하지 않게) */
+  var suppressCardClick = 0;
+
+  function initCardGallery() {
+    var grid = $('#roomGrid');
+    if (!grid) return;
+    var drag = null;
+
+    grid.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.target.closest('[data-dot]')) return;
+      var media = e.target.closest('[data-media]');
+      if (!media) return;
+      var track = media.querySelector('[data-track]');
+      if (!track || track.children.length < 2) return;
+      drag = {
+        media: media, track: track, id: e.pointerId,
+        x0: e.clientX, y0: e.clientY, dx: 0,
+        idx: Number(track.dataset.i || 0), moved: false
+      };
+      try { track.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+
+    grid.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+      if (!drag.moved) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
+        if (Math.abs(dx) < 8) return;
+        drag.moved = true;
+        drag.track.classList.add('is-dragging');
+      }
+      drag.dx = dx;
+      var w = drag.media.clientWidth || 1;
+      drag.track.style.transform = 'translate3d(' + (-drag.idx * 100 + (dx / w) * 100) + '%,0,0)';
+    });
+
+    function finish(e) {
+      if (!drag) return;
+      var d = drag; drag = null;
+      var next = d.idx;
+      if (d.moved) {
+        var w = d.media.clientWidth || 1;
+        if (d.dx < -w * 0.12) next = d.idx + 1;
+        else if (d.dx > w * 0.12) next = d.idx - 1;
+        suppressCardClick = Date.now() + 400;
+      }
+      d.track.classList.remove('is-dragging');
+      goCardPhoto(d.media, next);
+    }
+    grid.addEventListener('pointerup', finish);
+    grid.addEventListener('pointercancel', function () {
+      if (!drag) return;
+      var d = drag; drag = null;
+      d.track.classList.remove('is-dragging');
+      goCardPhoto(d.media, d.idx);
+    });
+
+    // 점에서 좌우 방향키
+    grid.addEventListener('keydown', function (e) {
+      var dot = e.target.closest('[data-dot]');
+      if (!dot) return;
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var media = dot.closest('[data-media]');
+      var dots = $$('[data-dot]', media);
+      var next = (Number(dot.dataset.dot) + (e.key === 'ArrowRight' ? 1 : -1) + dots.length) % dots.length;
+      goCardPhoto(media, next);
+      if (dots[next]) dots[next].focus();
+    });
   }
 
   /* ---------- 객실 상세 ---------- */
@@ -629,9 +735,17 @@
     });
 
     $('#roomGrid').addEventListener('click', function (e) {
+      var dot = e.target.closest('[data-dot]');
+      if (dot) {
+        e.preventDefault();
+        goCardPhoto(dot.closest('[data-media]'), Number(dot.dataset.dot));
+        return;
+      }
+      if (Date.now() < suppressCardClick) return;
       var card = e.target.closest('[data-room]');
       if (card) openRoom(card.dataset.room);
     });
+    initCardGallery();
     $('#modalClose').addEventListener('click', closeRoom);
     $('#modalBack').addEventListener('click', closeRoom);
 
