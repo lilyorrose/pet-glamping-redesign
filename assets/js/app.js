@@ -463,25 +463,113 @@
     });
   }
 
-  /* ---------- 객실 상세 ---------- */
+  /* ---------- 객실 상세 (풀폭 화보) ---------- */
+  var stage = { i: 0, n: 0, drag: null, suppressClick: 0, hintOff: false };
+
+  function photoCap(r, n) {
+    var caps = (r && r.photos && r.photos.caps) || {};
+    return caps[String(n)] || '';
+  }
+
+  function openStageLightbox() {
+    if (!state.room) return;
+    openLightboxByIndex(stage.i);
+  }
+
+  function openLightboxByIndex(i) {
+    if (!state.room) return;
+    var r = state.room;
+    var list = r.photos.all || [];
+    var urls = list.map(function (n) { return photoUrl(r.code, n, true); });
+    var cap = photoCap(r, list[i]);
+    openLightbox(urls, i, r.name + (cap ? ' · ' + cap : ''));
+  }
+
+  function setStage(i, instant) {
+    var track = $('#roomTrack');
+    if (!track || !stage.n) return;
+    i = Math.max(0, Math.min(stage.n - 1, i));
+    stage.i = i;
+    if (instant) track.style.transition = 'none';
+    track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
+    if (instant) { void track.offsetWidth; track.style.transition = ''; }
+    $$('#stageDots .rv-dot').forEach(function (d, k) {
+      d.setAttribute('aria-current', String(k === i));
+      d.tabIndex = k === i ? 0 : -1;
+    });
+    $('#stageIdx').textContent = pad2(i + 1);
+    var r = state.room;
+    $('#stageCap').textContent = r ? photoCap(r, r.photos.all[i]) : '';
+    var prev = $('#stagePrev'), next = $('#stageNext');
+    if (prev) prev.classList.toggle('is-edge', i === 0);
+    if (next) next.classList.toggle('is-edge', i === stage.n - 1);
+  }
+
+  function hideStageHint() {
+    if (stage.hintOff) return;
+    stage.hintOff = true;
+    var h = $('#stageHint');
+    if (h) h.classList.add('is-off');
+  }
+
   function openRoom(code) {
     var r = data().rooms.filter(function (x) { return x.code === code; })[0];
     if (!r) return;
     state.room = r;
+    var list = r.photos.all || [];
+    var caps = r.photos.caps || {};
     $('#modalTitle').textContent = r.name;
     $('#modalSub').textContent = r.subtitle;
-    $('#photoGrid').innerHTML = (r.photos.all || []).map(function (n, i) {
-      return '<button type="button" data-photo="' + n + '" aria-label="사진 ' + (i + 1) + ' 크게 보기">' +
-        '<img src="' + photoUrl(r.code, n, false) + '" alt="' + esc(r.name + ' 사진 ' + (i + 1)) + '" loading="lazy"></button>';
+    $('#infoTitle').textContent = r.name + ' · ' + (r.subtitle || '');
+    var line = ['기준 ' + r.base + '인 · 최대 ' + r.max + '인', r.pyeong + '평'];
+    if (r.tub) line.push('오션뷰 욕조');
+    if (r.pool) line.push('개별 미온수 풀');
+    $('#infoLine').textContent = line.join('  ·  ');
+    $('#stageTotal').textContent = pad2(list.length);
+    $('#photoCount').textContent = list.length;
+
+    $('#roomTrack').innerHTML = list.map(function (n, i) {
+      var cap = caps[String(n)] || '';
+      return '<figure class="rv-slide" data-i="' + i + '">' +
+        '<img src="' + photoUrl(r.code, n, true) + '" alt="' + esc(r.name + ' ' + (cap || '사진') + ' ' + (i + 1)) + '"' +
+        (i === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' draggable="false">' +
+        '</figure>';
     }).join('');
+
+    $('#stageDots').innerHTML = list.map(function (n, i) {
+      var cap = caps[String(n)] || '';
+      return '<button class="rv-dot" type="button" data-stage="' + i + '"' +
+        ' aria-label="' + esc(r.name + ' 사진 ' + (i + 1) + (cap ? ' ' + cap : '')) + '"' +
+        ' aria-current="' + (i === 0) + '"' + (i === 0 ? '' : ' tabindex="-1"') + '></button>';
+    }).join('');
+
+    $('#photoGrid').innerHTML = list.map(function (n, i) {
+      var cap = caps[String(n)] || '';
+      return '<figure class="rv-photo" data-photo="' + n + '" data-i="' + i + '" role="button" tabindex="0"' +
+        ' aria-label="' + esc(r.name + ' ' + (cap || '사진') + ' 크게 보기') + '">' +
+        '<img src="' + photoUrl(r.code, n, true) + '" alt="' + esc(r.name + ' ' + (cap || '사진')) + '" loading="lazy">' +
+        '<figcaption><span class="rv-photo-no">' + pad2(i + 1) + '</span>' +
+        '<span class="rv-photo-cap">' + esc(cap) + '</span></figcaption>' +
+        '</figure>';
+    }).join('');
+
+    stage.n = list.length;
+    stage.hintOff = false;
+    var hint = $('#stageHint');
+    if (hint) hint.classList.remove('is-off');
+    if (stage.n) setStage(0, true);
     renderSummary(r);
+
     $('#modalBook').href = data().links.naverBooking;
+    $('#modalBookEnd').href = data().links.naverBooking;
     $('#modalCall').href = data().contact.phoneHref;
     $('#modalCall').textContent = '전화 ' + data().contact.phone;
+    $('#endLine').textContent = r.name + ' ' + (r.subtitle || '') + ' — 주중 ' + krw(r.price.weekday) + '원부터. 실시간 예약 달력에서 날짜별 요금을 확인하세요.';
     $('#roomModal').classList.add('is-open');
+    $('#roomModal').classList.remove('is-scrolled');
     $('#modalBack').classList.add('is-open');
     lockScroll();
-    $('#roomModal').querySelector('.rv-body').scrollTop = 0;
+    $('#modalBody').scrollTop = 0;
     setTimeout(function () { $('#modalClose').focus(); }, 80);
   }
 
@@ -498,32 +586,34 @@
       if (/반려견/.test(f.label)) return !!r.pet;
       return /인원|바베큐/.test(f.label);
     });
-    var html = '<h4>객실 정보</h4><table class="spec-table"><tbody>' +
+
+    var left = '<div class="rv-col">' +
+      '<h4>객실 정보</h4><table class="spec-table"><tbody>' +
       '<tr><th>구조</th><td>' + esc(r.beds) + '</td></tr>' +
       '<tr><th>넓이</th><td>' + r.pyeong + '평 · 약 ' + r.sqm + '㎡</td></tr>' +
       '<tr><th>인원</th><td>기준 ' + r.base + '인 · 최대 ' + r.max + '인 (초과 1인 ' + krw(r.extra) + '원)</td></tr>' +
       '<tr><th>전용</th><td>바베큐장 · 주방 · 욕실' + (r.tub ? ' · 오션뷰 욕조' : '') + (r.pool ? ' · 개별 풀' : '') + '</td></tr>' +
-      '</tbody></table>';
+      '</tbody></table>' +
+      '<h4>구비시설</h4><div class="fac-chips">' + String(r.facilities || '').split(',').map(function (s) {
+        var t = s.trim(); return t ? '<span>' + esc(t) + '</span>' : '';
+      }).join('') + '</div>' +
+      (r.note ? '<h4>이 동의 특징</h4><p class="mnote">' + esc(r.note) + '</p>' : '') +
+      '<h4>반려견</h4><p class="mnote">' + (r.pet ? '반려견 동반 가능 (최대 2견, 2견 이상은 사전 문의)' : '이 동은 반려견 동반 표기가 없습니다. 예약 전 문의해 주세요.') + '</p>' +
+      '</div>';
 
-    html += '<h4>1박 요금</h4><div class="price-rows">' +
+    var right = '<div class="rv-col">' +
+      '<h4>1박 요금</h4><div class="price-rows">' +
       '<div><span>주중 (일~목)</span><b>' + krw(p.weekday) + '원</b></div>' +
       '<div><span>금요일</span><b>' + krw(p.friday) + '원</b></div>' +
       '<div><span>토·공휴일</span><b>' + krw(p.saturday) + '원</b></div>' +
-      '</div><p class="price-note">2026년 11월 실시간 예약 기준 할인가입니다. 성수기·연휴 요금은 예약 달력에서 확인해 주세요.</p>';
-
-    if (fees.length) {
-      html += '<h4>추가 요금</h4><div class="price-rows">' + fees.map(function (f) {
+      '</div><p class="price-note">2026년 11월 실시간 예약 기준 할인가입니다. 성수기·연휴 요금은 예약 달력에서 확인해 주세요.</p>' +
+      (fees.length ? '<h4>추가 요금</h4><div class="price-rows">' + fees.map(function (f) {
         return '<div><span>' + esc(f.label) + '</span><b style="font-family:var(--sans);font-size:12px">' + esc(f.value) + '</b></div>';
-      }).join('') + '</div>';
-    }
+      }).join('') + '</div>' : '') +
+      '<h4>사진</h4><p class="mnote">이 방의 사진 ' + (r.photos.all || []).length + '장. 아래로 내리면 한 장씩 크게 이어집니다.</p>' +
+      '</div>';
 
-    html += '<h4>구비시설</h4><div class="fac-chips">' + String(r.facilities || '').split(',').map(function (s) {
-      var t = s.trim(); return t ? '<span>' + esc(t) + '</span>' : '';
-    }).join('') + '</div>';
-
-    if (r.note) html += '<h4>이 동의 특징</h4><p class="mnote">' + esc(r.note) + '</p>';
-    html += '<h4>반려견</h4><p class="mnote">' + (r.pet ? '반려견 동반 가능 (최대 2견, 2견 이상은 사전 문의)' : '이 동은 반려견 동반 표기가 없습니다. 예약 전 문의해 주세요.') + '</p>';
-    $('#roomSummary').innerHTML = html;
+    $('#roomSummary').innerHTML = left + right;
   }
 
   /* ---------- 라이트박스 ---------- */
@@ -749,12 +839,109 @@
     $('#modalClose').addEventListener('click', closeRoom);
     $('#modalBack').addEventListener('click', closeRoom);
 
+    /* 객실 상세 — 대표 사진 스테이지 */
+    $('#stagePrev').addEventListener('click', function () { setStage(stage.i - 1); hideStageHint(); });
+    $('#stageNext').addEventListener('click', function () { setStage(stage.i + 1); hideStageHint(); });
+    $('#stageDots').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-stage]');
+      if (!b) return;
+      setStage(Number(b.dataset.stage));
+      hideStageHint();
+    });
+    $('#stageZoom').addEventListener('click', openStageLightbox);
+    $('#roomStage').addEventListener('click', function (e) {
+      if (e.target.closest('.rv-arrow') || e.target.closest('.rv-dot') ||
+          e.target.closest('.rv-zoom') || e.target.closest('.rv-bar')) return;
+      if (Date.now() < stage.suppressClick) return;
+      openStageLightbox();
+    });
+
+    /* 손가락으로 스테이지 넘기기 */
+    (function initStageSwipe() {
+      var el = $('#roomStage'), track = $('#roomTrack');
+      el.addEventListener('pointerdown', function (e) {
+        if (stage.n < 2) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        if (e.target.closest('.rv-arrow') || e.target.closest('.rv-dot') ||
+            e.target.closest('.rv-zoom') || e.target.closest('.rv-bar')) return;
+        stage.drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, moved: false, i: stage.i, w: el.clientWidth || 1 };
+        try { track.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      el.addEventListener('pointermove', function (e) {
+        var d = stage.drag;
+        if (!d || e.pointerId !== d.id) return;
+        var dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+        if (!d.moved) {
+          if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { stage.drag = null; return; }
+          if (Math.abs(dx) < 8) return;
+          d.moved = true;
+          track.classList.add('is-dragging');
+        }
+        d.dx = dx;
+        track.style.transform = 'translate3d(' + (-d.i * 100 + (dx / d.w) * 100) + '%,0,0)';
+      });
+      function end(e) {
+        var d = stage.drag;
+        if (!d) return;
+        stage.drag = null;
+        track.classList.remove('is-dragging');
+        var next = d.i;
+        if (d.moved) {
+          if (d.dx < -d.w * 0.1) next = d.i + 1;
+          else if (d.dx > d.w * 0.1) next = d.i - 1;
+          stage.suppressClick = Date.now() + 450;
+          hideStageHint();
+        }
+        setStage(next);
+      }
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', function () {
+        var d = stage.drag;
+        stage.drag = null;
+        track.classList.remove('is-dragging');
+        if (d) setStage(d.i);
+      });
+    })();
+
+    /* 스크롤하면 상단 바를 종이색으로, 화보 구간에서는 지금 보이는 사진 번호를 보여줍니다 */
+    var scrollRaf = 0;
+    function syncBar() {
+      var body = $('#modalBody');
+      var y = body.scrollTop;
+      $('#roomModal').classList.toggle('is-scrolled', y > 48);
+      if (y > 60) hideStageHint();
+      var stageH = $('#roomStage') ? $('#roomStage').offsetHeight : 0;
+      if (y > stageH) {
+        var mid = window.innerHeight * 0.42;
+        var photos = $$('#photoGrid .rv-photo');
+        for (var i = 0; i < photos.length; i++) {
+          var r = photos[i].getBoundingClientRect();
+          if (r.top <= mid && r.bottom > mid) {
+            $('#stageIdx').textContent = pad2(i + 1);
+            break;
+          }
+        }
+      } else {
+        $('#stageIdx').textContent = pad2(stage.i + 1);
+      }
+    }
+    $('#modalBody').addEventListener('scroll', function () {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(function () { scrollRaf = 0; syncBar(); });
+    });
+
     $('#photoGrid').addEventListener('click', function (e) {
       var b = e.target.closest('[data-photo]');
       if (!b || !state.room) return;
-      var list = state.room.photos.all;
-      var urls = list.map(function (n) { return photoUrl(state.room.code, n, true); });
-      openLightbox(urls, list.indexOf(Number(b.dataset.photo)), state.room.name);
+      openLightboxByIndex(Number(b.dataset.i));
+    });
+    $('#photoGrid').addEventListener('keydown', function (e) {
+      var b = e.target.closest('[data-photo]');
+      if (!b) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        openLightboxByIndex(Number(b.dataset.i));
+      }
     });
     $('#lbClose').addEventListener('click', closeLightbox);
     $('#lightbox').addEventListener('click', function (e) {
@@ -773,6 +960,9 @@
       if ($('#lightbox').classList.contains('is-open')) {
         if (e.key === 'ArrowLeft') stepLightbox(-1);
         if (e.key === 'ArrowRight') stepLightbox(1);
+      } else if ($('#roomModal').classList.contains('is-open')) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); setStage(stage.i - 1); hideStageHint(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); setStage(stage.i + 1); hideStageHint(); }
       }
     });
 

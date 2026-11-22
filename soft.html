@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@300;400&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=8">
+<link rel="stylesheet" href="assets/css/style.css?v=9">
 <link rel="preload" as="image" href="assets/img/hero/hero-tub.jpg">
 </head>
 <body>
@@ -313,14 +313,48 @@
 
 <!-- ================= 객실 상세 ================= -->
 <div class="rv" id="roomModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="rv-bar">
-    <span class="rv-code" id="modalTitle">G5</span>
+  <div class="rv-bar" id="roomBar">
+    <span class="rv-code" id="modalTitle">G6</span>
     <span class="rv-name" id="modalSub"></span>
-    <button class="rv-close" type="button" id="modalClose" aria-label="닫기">닫기 ✕</button>
+    <span class="rv-idx"><b id="stageIdx">01</b> <i>/</i> <span id="stageTotal">08</span></span>
+    <button class="rv-close" type="button" id="modalClose" aria-label="닫기">닫기 <span aria-hidden="true">✕</span></button>
   </div>
   <div class="rv-body" id="modalBody">
-    <div class="rv-gallery" id="photoGrid"></div>
-    <div class="rv-side" id="roomSummary"></div>
+
+    <section class="rv-stage" id="roomStage" aria-roledescription="사진 슬라이드" aria-label="객실 사진">
+      <div class="rv-track" id="roomTrack"></div>
+      <div class="rv-shade" aria-hidden="true"></div>
+      <button class="rv-arrow rv-prev" id="stagePrev" type="button" aria-label="이전 사진">‹</button>
+      <button class="rv-arrow rv-next" id="stageNext" type="button" aria-label="다음 사진">›</button>
+      <p class="rv-cap" id="stageCap"></p>
+      <div class="rv-dots" id="stageDots" role="group" aria-label="사진 선택"></div>
+      <p class="rv-hint" id="stageHint">옆으로 밀어 크게 넘겨 보세요</p>
+      <button class="rv-zoom" id="stageZoom" type="button">사진 크게 보기 <span aria-hidden="true">⤢</span></button>
+    </section>
+
+    <div class="rv-info">
+      <div class="rv-info-head">
+        <p class="label">ROOM INFO</p>
+        <h3 class="rv-info-title" id="infoTitle">G6</h3>
+        <p class="rv-info-line" id="infoLine"></p>
+      </div>
+      <div class="rv-side" id="roomSummary"></div>
+    </div>
+
+    <section class="rv-gallery-wrap" aria-label="객실 사진 한 장씩 크게 보기">
+      <div class="rv-gallery-head">
+        <p class="label">PHOTOS <span id="photoCount"></span></p>
+        <h3 class="rv-gallery-title">한 장씩, 이 방의 하루</h3>
+        <p class="rv-gallery-sub">사진을 누르면 원본 화질로 크게 볼 수 있습니다.</p>
+      </div>
+      <div class="rv-gallery" id="photoGrid"></div>
+    </section>
+
+    <div class="rv-end">
+      <p class="rv-end-line" id="endLine"></p>
+      <a class="rv-end-book primary" id="modalBookEnd" href="#" target="_blank" rel="noopener">네이버에서 실시간 예약</a>
+    </div>
+
   </div>
   <div class="rv-foot">
     <a id="modalCall" href="#">전화</a>
@@ -353,8 +387,8 @@
   <button class="lb-next" type="button" id="lbNext" aria-label="다음 사진">›</button>
 </div>
 
-<script src="assets/js/site-data.js?v=7"></script>
+<script src="assets/js/site-data.js?v=8"></script>
 <script src="assets/js/fontsize.js?v=2"></script>
-<script src="assets/js/app.js?v=7"></script>
+<script src="assets/js/app.js?v=8"></script>
 </body>
 </html>

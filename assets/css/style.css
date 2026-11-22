@@ -515,7 +515,7 @@ ul,ol{padding:0;list-style:none}
 }
 .mobar a.primary{background:var(--ink);color:#fff}
 
-/* ---------------- 객실 상세 ---------------- */
+/* ---------------- 객실 상세 (풀폭 화보) ---------------- */
 .rv{
   position:fixed;inset:0;z-index:90;background:var(--paper);
   display:flex;flex-direction:column;overflow:hidden;
@@ -523,24 +523,98 @@ ul,ol{padding:0;list-style:none}
   transition:opacity .45s var(--ease),transform .45s var(--ease),visibility .45s;
 }
 .rv.is-open{visibility:visible;opacity:1;transform:none}
-.rv-bar{
-  position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:14px;
-  padding:18px var(--pad);background:rgba(246,243,238,.96);backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-}
-.rv-code{font-family:var(--display);font-size:20px;letter-spacing:.06em}
-.rv-name{font-family:var(--serif);font-size:13px;color:var(--muted)}
-.rv-close{margin-left:auto;font-size:11px;letter-spacing:.16em;color:var(--muted)}
 .rv-body{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(24px,4vw,56px);
-  padding:clamp(20px,3vw,40px) var(--pad) 40px;max-width:1400px;margin:0 auto;width:100%;
+  flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;background:var(--paper);
 }
-.rv-gallery{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start}
-.rv-gallery button{overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
-.rv-gallery button:first-child{grid-column:span 2;aspect-ratio:16/10}
-.rv-gallery img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
-.rv-gallery button:hover img{transform:scale(1.03)}
+
+/* 상단 바 — 사진 위에 떠 있다가 스크롤하면 종이색으로 */
+.rv-bar{
+  position:absolute;left:0;right:0;top:0;z-index:6;
+  display:flex;align-items:center;gap:12px;
+  padding:15px var(--pad);color:#fff;
+  background:transparent;border-bottom:1px solid transparent;
+  transition:background .45s var(--ease),color .45s var(--ease),border-color .45s;
+}
+.rv.is-scrolled .rv-bar{
+  background:rgba(246,243,238,.96);backdrop-filter:blur(12px);
+  color:var(--ink);border-bottom-color:var(--line);
+}
+.rv-code{font-family:var(--display);font-size:22px;letter-spacing:.06em;line-height:1.2}
+.rv-name{font-family:var(--serif);font-size:12.5px;opacity:.86;line-height:1.4}
+.rv-idx{margin-left:auto;font-family:var(--display);font-size:15px;letter-spacing:.1em;font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1}
+.rv-idx b{font-weight:400}
+.rv-idx i{font-style:normal;opacity:.5;margin:0 3px}
+.rv-close{font-size:11px;letter-spacing:.14em;border:1px solid rgba(255,255,255,.45);padding:7px 11px;transition:border-color .4s,background .3s}
+.rv.is-scrolled .rv-close{border-color:var(--line)}
+
+/* 대표 사진 — 화면을 꽉 채우는 스테이지 */
+.rv-stage{position:relative;width:100%;height:min(82svh,880px);background:#0c0d0e;overflow:hidden;touch-action:pan-y}
+.rv-track{display:flex;height:100%;transform:translate3d(0,0,0);transition:transform .55s var(--ease);will-change:transform}
+.rv-track.is-dragging{transition:none}
+.rv-slide{position:relative;flex:0 0 100%;width:100%;height:100%;margin:0;overflow:hidden}
+.rv-slide img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-user-drag:none;user-select:none;pointer-events:none;
+}
+.rv-shade{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,10,12,.62) 0%,rgba(8,10,12,.22) 18%,rgba(8,10,12,.02) 38%,rgba(8,10,12,0) 52%,rgba(8,10,12,.12) 72%,rgba(8,10,12,.62) 100%);
+}
+.rv-bar > *{text-shadow:0 1px 12px rgba(0,0,0,.45)}
+.rv.is-scrolled .rv-bar > *{text-shadow:none}
+.rv-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:4;
+  width:46px;height:66px;display:grid;place-items:center;
+  font-size:26px;color:#fff;background:rgba(10,11,12,.26);backdrop-filter:blur(4px);
+  opacity:.9;transition:background .3s,opacity .3s;
+}
+.rv-arrow:hover{opacity:1;background:rgba(10,11,12,.46)}
+.rv-arrow.is-edge{opacity:.22}
+.rv-prev{left:0}
+.rv-next{right:0}
+.rv-cap{
+  position:absolute;left:var(--pad);right:calc(var(--pad) + 150px);bottom:78px;z-index:4;
+  color:#fff;font-family:var(--serif);font-size:15px;letter-spacing:.02em;line-height:1.5;
+  text-shadow:0 1px 16px rgba(0,0,0,.6);
+}
+.rv-dots{
+  position:absolute;left:0;right:0;bottom:32px;z-index:4;
+  display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap;padding:0 var(--pad);
+}
+.rv-dot{width:20px;height:22px;display:grid;place-items:center}
+.rv-dot::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);
+  box-shadow:0 0 0 1px rgba(10,11,12,.22);transition:background .25s,transform .25s;
+}
+.rv-dot[aria-current="true"]::before{background:#fff;transform:scale(1.4)}
+.rv-dot:focus-visible{outline:1px solid #fff;outline-offset:2px}
+.rv-hint{
+  position:absolute;left:50%;bottom:9px;transform:translateX(-50%);z-index:4;
+  color:rgba(255,255,255,.78);font-size:10.5px;letter-spacing:.1em;white-space:nowrap;
+  transition:opacity .5s;
+}
+.rv-hint.is-off{opacity:0}
+.rv-zoom{
+  position:absolute;right:var(--pad);bottom:70px;z-index:4;
+  color:#fff;font-size:10.5px;letter-spacing:.12em;padding:8px 12px;
+  border:1px solid rgba(255,255,255,.42);background:rgba(10,11,12,.3);backdrop-filter:blur(6px);
+  transition:background .3s;
+}
+.rv-zoom:hover{background:rgba(10,11,12,.5)}
+
+/* 객실 정보 */
+.rv-info{
+  width:100%;max-width:1320px;margin:0 auto;
+  padding:clamp(30px,4vw,54px) var(--pad) clamp(8px,1.6vw,18px);
+}
+.rv-info-head{margin-bottom:clamp(18px,2.4vw,30px)}
+.rv-info-title{font-family:var(--serif);font-weight:400;font-size:clamp(21px,2.6vw,30px);margin-top:10px;letter-spacing:-.01em;line-height:1.35}
+.rv-info-line{margin-top:7px;font-size:12.5px;color:var(--muted)}
+.rv-side{display:grid;gap:0 clamp(30px,4vw,70px)}
+.rv-col{min-width:0}
+.rv-col + .rv-col{margin-top:28px}
+.rv-col + .rv-col h4:first-child{margin-top:0}
 .rv-side h4{font-family:var(--sans);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
 .rv-side h4:first-child{margin-top:0}
 .spec-table{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -554,6 +628,37 @@ ul,ol{padding:0;list-style:none}
 .price-note{margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.7}
 .fac-chips{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--muted)}
 .mnote{font-size:12px;color:var(--muted);line-height:1.8}
+
+/* 한 장씩 이어지는 세로 화보 */
+.rv-gallery-wrap{padding-top:clamp(30px,4.4vw,60px)}
+.rv-gallery-head{max-width:1320px;margin:0 auto clamp(16px,2.2vw,26px);padding:0 var(--pad)}
+.rv-gallery-title{font-family:var(--serif);font-weight:400;font-size:clamp(19px,2.3vw,27px);margin-top:10px;letter-spacing:-.01em}
+.rv-gallery-sub{margin-top:7px;font-size:12px;color:var(--muted)}
+.rv-gallery{display:block}
+.rv-photo{position:relative;margin:0;background:#0c0d0e;overflow:hidden;cursor:zoom-in}
+.rv-photo img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;transition:transform 1.4s var(--ease)}
+.rv-photo:hover img{transform:scale(1.015)}
+.rv-photo figcaption{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  display:flex;align-items:baseline;gap:10px;
+  padding:26px var(--pad) 20px;color:#fff;
+  background:linear-gradient(180deg,rgba(10,11,12,0),rgba(10,11,12,.52));
+  pointer-events:none;
+}
+.rv-photo-no{font-family:var(--display);font-size:13.5px;letter-spacing:.08em;opacity:.75;font-variant-numeric:lining-nums}
+.rv-photo-cap{font-family:var(--serif);font-size:13.5px;letter-spacing:.02em}
+
+/* 마지막 예약 유도 */
+.rv-end{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;
+  max-width:1320px;margin:0 auto;padding:clamp(30px,4vw,50px) var(--pad) clamp(34px,5vw,64px);
+}
+.rv-end-line{font-size:12.5px;line-height:1.8;color:var(--muted);max-width:44ch}
+.rv-end-book{
+  display:inline-grid;place-items:center;height:52px;padding:0 clamp(22px,3vw,34px);
+  background:var(--ink);color:#fff;font-size:12.5px;letter-spacing:.08em;white-space:nowrap;
+}
+
 .rv-foot{
   display:flex;gap:10px;padding:14px var(--pad);
   border-top:1px solid var(--line);background:rgba(246,243,238,.97);
@@ -595,15 +700,20 @@ ul,ol{padding:0;list-style:none}
 .sheet-close{margin-top:18px;width:100%;height:44px;border:1px solid var(--line);font-size:12px}
 
 /* ---------------- 반응형 ---------------- */
+@media (min-width:900px){
+  .rv-side{grid-template-columns:1fr 1fr}
+  .rv-col + .rv-col{margin-top:0}
+}
 @media (max-width:1100px){
   .hd-nav{display:none}
   .hd-menu{display:inline-block}
-  .rv-body{grid-template-columns:1fr}
   .clip-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media (max-width:900px){
   .intro-in{grid-template-columns:1fr;gap:18px}
-  .room-grid{grid-template-columns:1fr;gap:44px}
+  .room-grid{grid-template-columns:1fr;gap:46px}
+  .card-media{margin:0 calc(var(--pad) * -1);aspect-ratio:4/3}
+  .card-body{padding:16px var(--pad) 0}
   .fac-grid{grid-template-columns:1fr 1fr}
   .pet-cols,.book-in,.loc-in{grid-template-columns:1fr}
   .amenity{grid-template-columns:1fr}
@@ -654,9 +764,19 @@ ul,ol{padding:0;list-style:none}
   .hours{grid-template-columns:1fr 1fr}
   .mobar{display:flex}
   body{padding-bottom:52px}
-  .rv-bar{padding:14px var(--pad)}
-  .rv-gallery{grid-template-columns:1fr 1fr}
-  .rv-body{padding-bottom:20px}
+  .rv-stage{height:74svh;min-height:420px}
+  .rv-bar{padding:13px var(--pad);gap:9px}
+  .rv-code{font-size:19px}
+  .rv-name{font-size:11px}
+  .rv-idx{font-size:13px}
+  .rv-close{padding:6px 9px;font-size:10px}
+  .rv-arrow{width:38px;height:54px;font-size:22px}
+  .rv-cap{left:var(--pad);right:var(--pad);bottom:64px;font-size:13.5px}
+  .rv-zoom{bottom:58px;padding:6px 9px;font-size:9.5px}
+  .rv-dots{bottom:26px}
+  .rv-photo img{aspect-ratio:4/3}
+  .rv-photo figcaption{padding:20px var(--pad) 14px}
+  .rv-end-book{width:100%}
   .ft .ft-nav{gap:14px;font-size:10px}
   .ft-bottom{flex-direction:column;align-items:flex-start}
   .clip-grid{grid-template-columns:1fr 1fr;gap:10px}
