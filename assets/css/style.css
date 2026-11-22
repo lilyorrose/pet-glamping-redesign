@@ -186,11 +186,12 @@ ul,ol{padding:0;list-style:none}
 .nb-item{
   position:absolute;inset:0;display:flex;align-items:center;gap:10px;
   font-size:12px;letter-spacing:.01em;color:var(--ink-2);
-  opacity:0;transition:opacity .7s var(--ease);
+  opacity:0;transition:opacity .5s var(--ease);
   white-space:nowrap;overflow:hidden;
   pointer-events:none;z-index:0;
 }
 .nb-item.is-on{opacity:1;pointer-events:auto;z-index:2}
+.nb-item.is-off{transition:none}
 .nb-item strong{
   flex:0 0 auto;font-weight:400;color:var(--muted);
   letter-spacing:.16em;font-size:10px;text-transform:uppercase;white-space:nowrap;

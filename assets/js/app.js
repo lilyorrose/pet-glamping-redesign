@@ -219,7 +219,7 @@
     bar.classList.remove('hidden');
     $('#nbView').innerHTML = list.map(function (n, i) {
       var on = i === 0;
-      return '<div class="nb-item' + (on ? ' is-on' : '') + '" data-i="' + i + '" aria-hidden="' + (on ? 'false' : 'true') + '">' +
+      return '<div class="nb-item' + (on ? ' is-on' : ' is-off') + '" data-i="' + i + '" aria-hidden="' + (on ? 'false' : 'true') + '">' +
         '<strong>' + esc(n.badge || '') + '</strong>' +
         '<span class="nb-text">' + esc(n.text || '') + '</span>' +
         '<span class="nb-more" aria-hidden="true">자세히<i>→</i></span>' +
@@ -246,6 +246,7 @@
     $$('#nbView .nb-item').forEach(function (el, k) {
       var on = k === i;
       el.classList.toggle('is-on', on);
+      el.classList.toggle('is-off', !on);
       el.setAttribute('aria-hidden', String(!on));
     });
     $$('#nbDots button').forEach(function (el, k) { el.setAttribute('aria-current', String(k === i)); });
