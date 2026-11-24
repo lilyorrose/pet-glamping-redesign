@@ -57,7 +57,7 @@
   }
 
   /* ---------- 히어로 (자동 슬라이드 + 손가락 스와이프) ---------- */
-  var HERO_MS = 6000;
+  var HERO_MS = 3000;
   var heroTimer = null;
   var hero = { pos: 0, n: 0, w: 0, drag: null };
 

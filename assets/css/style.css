@@ -186,7 +186,7 @@ ul,ol{padding:0;list-style:none}
   transform:scaleX(0);transform-origin:left;transition:transform .4s;
 }
 .hero-dots button[aria-current="true"]::after{transform:scaleX(1)}
-.hero-dots.is-ticking button[aria-current="true"]::after{animation:heroFill var(--hero-ms,6000ms) linear forwards}
+.hero-dots.is-ticking button[aria-current="true"]::after{animation:heroFill var(--hero-ms,3000ms) linear forwards}
 .hero-dots.is-paused button[aria-current="true"]::after{animation-play-state:paused}
 @keyframes heroFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
