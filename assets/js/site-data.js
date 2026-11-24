@@ -1044,7 +1044,7 @@ window.SITE_DATA = {
    "show": true,
    "title": "구룡포 풀글램핑&펫글램핑, 오션뷰 돔 첫 1박",
    "summary": "#포항펫글램핑 #풀글램핑 · 솔직컨슈머",
-   "url": "https://naver.me/FP81nhIN",
+   "url": "https://naver.me/5PW6BVZU",
    "author": "솔직컨슈머",
    "date": "2026.11",
    "thumb": "assets/img/rev/clip3.jpg"
