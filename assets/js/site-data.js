@@ -1,5 +1,5 @@
 /* 사이트 설정 파일 — 이 파일 하나만 고치면 홈페이지 전체가 바뀝니다. */
-window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
+window.SITE_DATA = {
  "brand": {
   "name": "풀글램핑&펫글램핑",
   "nameEn": "FULL GLAMPING & PET GLAMPING",
@@ -394,7 +394,7 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "beds": "침실 1 · 침대 1",
    "base": 2,
    "max": 4,
-   "note": "바베큐장·주방 + 오션뷰 포토존 욕실 + 강아지 놀이터. 선룸 다이닝에서 일출을 볼 수 있습니다.",
+   "note": "개별 바베큐장·실내 주방 + 프라이빗 오션뷰 욕실 + 강아지 운동장. 따뜻하게 난방이 잘 되는 이글루형 돔 구조에, 선룸 다이닝에서 바다 일출을 바로 볼 수 있는 인기 2인 객실입니다.",
    "tub": true,
    "pool": false,
    "pet": true,
@@ -1039,6 +1039,17 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
  ],
  "reviews": [
   {
+   "id": "c3",
+   "type": "clip",
+   "show": true,
+   "title": "첫 글램핑인데 새벽 4시까지 수다 떨다 일출까지 봤어요",
+   "summary": "#포항펫글램핑 #풀글램핑 · 솔직컨슈머",
+   "url": "https://naver.me/FP81nhIN",
+   "author": "솔직컨슈머",
+   "date": "2026.11",
+   "thumb": "assets/img/rev/clip3.jpg"
+  },
+  {
    "id": "c1",
    "type": "clip",
    "show": true,
@@ -1059,6 +1070,17 @@ window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = window.SITE_DATA = {
    "url": "https://m.naver.com/shorts/?seedMediaId=D2CDD1C2EE358CF18C928BA2258E70BE557C&serviceType=MOMENT",
    "author": "최포키",
    "date": "2026.06"
+  },
+  {
+   "id": "b0",
+   "type": "blog",
+   "show": true,
+   "title": "포항펫글램핑 풀글램핑&펫글램핑 · 애견동반숙소 첫 1박 후기",
+   "summary": "G4 오션뷰 2인 객실에서 1박. 프라이빗 오션뷰 욕실과 선룸 일출, 강아지 운동장까지 직접 담아온 솔직 후기.",
+   "thumb": "assets/img/rev/b0.jpg",
+   "url": "https://m.blog.naver.com/perfume7942/224489047297",
+   "author": "포항솔직컨슈머",
+   "date": "2026.11"
   },
   {
    "id": "b1",

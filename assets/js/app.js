@@ -56,19 +56,82 @@
     window.scrollTo(0, y);
   }
 
-  /* ---------- 히어로 ---------- */
+  /* ---------- 히어로 (자동 슬라이드 + 손가락 스와이프) ---------- */
+  var HERO_MS = 6000;
   var heroTimer = null;
-  var HERO_MS = 6500;
+  var hero = { pos: 0, n: 0, w: 0, drag: null };
 
-  function heroCount() { return $$('#heroSlides img').length; }
+  function heroTrack() { return $('#heroSlides'); }
+  function heroSlides() { return $$('#heroSlides .hero-slide'); }
 
-  function startHeroTimer() {
+  /* 지금 위치(pos)를 화면 폭 기준 픽셀로 옮겨 놓는다. dx는 손가락으로 끌고 있는 거리 */
+  function heroApply(dx, instant) {
+    var track = heroTrack();
+    if (!track) return;
+    var w = hero.w || track.clientWidth || window.innerWidth || 1;
+    var x = -(hero.pos * w) + (dx || 0);
+    if (instant) track.classList.add('is-jump');
+    track.style.transform = 'translate3d(' + x + 'px,0,0)';
+    if (instant) { void track.offsetWidth; track.classList.remove('is-jump'); }
+  }
+
+  function heroMeasure() {
+    var track = heroTrack();
+    if (!track) return;
+    hero.w = track.clientWidth || window.innerWidth || 1;
+  }
+
+  function heroSyncUI() {
+    var n = hero.n;
+    if (!n) return;
+    var i = ((hero.pos % n) + n) % n;
+    heroSlides().forEach(function (s, k) { s.classList.toggle('is-on', k === hero.pos); });
+    $$('#heroDots button').forEach(function (b, k) { b.setAttribute('aria-current', String(k === i)); });
+    var idx = $('#heroIdx');
+    if (idx) idx.textContent = pad2(i + 1);
+  }
+
+  function heroGo(pos, manual, instant) {
+    if (!hero.n) return;
+    hero.pos = Math.max(0, Math.min(hero.n, pos));
+    heroApply(0, !!instant);
+    heroSyncUI();
+    if (manual) heroStartTimer();
+  }
+
+  /* 이전 사진으로 갈 때 첫 장이면 마지막 장으로 이어 붙인다 */
+  function heroStep(d) {
+    if (!hero.n) return;
+    if (d < 0 && hero.pos === 0) { hero.pos = hero.n; heroApply(0, true); }
+    heroGo(hero.pos + d, true);
+  }
+
+  function heroStopTimer() {
     if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
-    if (heroCount() < 2) return;
+    var dots = $('#heroDots');
+    if (dots) dots.classList.remove('is-ticking', 'is-paused');
+  }
+
+  function heroStartTimer() {
+    heroStopTimer();
+    if (hero.n < 2) return;
+    var dots = $('#heroDots');
+    if (dots) {
+      dots.style.setProperty('--hero-ms', HERO_MS + 'ms');
+      void dots.offsetWidth;
+      dots.classList.add('is-ticking');
+    }
     heroTimer = setInterval(function () {
-      if (document.hidden || state.heroDrag) return;
-      goSlide(state.slide + 1);
+      if (document.hidden || hero.drag) return;
+      heroStep(1);
     }, HERO_MS);
+  }
+
+  /* 손가락을 대고 있는 동안은 자동 넘김과 진행 표시를 멈춘다 */
+  function heroPause() {
+    if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
+    var dots = $('#heroDots');
+    if (dots) dots.classList.add('is-paused');
   }
 
   function renderHero() {
@@ -77,135 +140,155 @@
     $('#heroSub').textContent = h.sub || '';
     $('#heroEyebrow').textContent = h.eyebrow || '';
     var slides = h.slides || [];
-    $('#heroSlides').innerHTML = slides.map(function (src, i) {
-      return '<img src="' + esc(src) + '" alt="" class="' + (i === 0 ? 'is-on' : '') + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '">';
-    }).join('');
-    $('#heroTotal').textContent = pad2(slides.length);
+    var n = slides.length;
+    hero.n = n;
+    hero.pos = 0;
+
+    function slideTag(src, i, clone) {
+      return '<figure class="hero-slide' + (i === 0 && !clone ? ' is-on' : '') + '" data-i="' + i + '"' +
+        (clone ? ' aria-hidden="true"' : '') + '>' +
+        '<img src="' + esc(src) + '" alt="" draggable="false"' +
+        (i === 0 && !clone ? ' fetchpriority="high"' : ' loading="lazy"') + '>' +
+        '</figure>';
+    }
+
+    var html = slides.map(function (src, i) { return slideTag(src, i, false); });
+    if (n > 1) html.push(slideTag(slides[0], n, true)); // 마지막 사진 다음에 첫 사진 복제본을 붙여 끊김 없이 이어 준다
+    heroTrack().innerHTML = html.join('');
+
+    $('#heroTotal').textContent = pad2(n);
     $('#heroDots').innerHTML = slides.map(function (_, i) {
       return '<button type="button" aria-label="' + (i + 1) + '번째 사진" aria-current="' + (i === 0) + '" data-i="' + i + '"></button>';
     }).join('');
-    $('#heroDots').onclick = function (e) {
-      var b = e.target.closest('button');
-      if (b) goSlide(Number(b.dataset.i));
-    };
+
     var hl = document.querySelector('.hero-link');
-    if (hl) { hl.href = (data().links && data().links.realtimeBooking) || '#booking'; hl.target = '_blank'; hl.rel = 'noopener'; }
-    startHeroTimer();
+    if (hl) {
+      hl.href = (data().links && data().links.realtimeBooking) || '#booking';
+      hl.target = '_blank';
+      hl.rel = 'noopener';
+    }
+
+    heroMeasure();
+    heroApply(0, true);
+    heroSyncUI();
+    heroStartTimer();
   }
 
-  function goSlide(i, manual) {
-    var imgs = $$('#heroSlides img');
-    var n = imgs.length;
-    if (!n) return;
-    i = ((Number(i) % n) + n) % n;
-    state.slide = i;
-    imgs.forEach(function (img, k) { img.classList.toggle('is-on', k === i); });
-    $$('#heroDots button').forEach(function (b, k) { b.setAttribute('aria-current', String(k === i)); });
-    var idx = $('#heroIdx'); if (idx) idx.textContent = pad2(i + 1);
-    var strip = $('#heroSlides');
-    if (strip) {
-      strip.classList.remove('is-dragging');
-      strip.style.transform = '';
-      if (manual) {
-        strip.classList.add('is-quick');
-        setTimeout(function () { strip.classList.remove('is-quick'); }, 900);
-        startHeroTimer();
+  /* 화살표·점과 손가락 드래그 */
+  function bindHeroControls() {
+    var heroEl = document.querySelector('.hero');
+    var track = heroTrack();
+    if (!heroEl || !track) return;
+
+    var dots = $('#heroDots');
+    if (dots) {
+      dots.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        heroGo(Number(b.dataset.i), true);
+      });
+    }
+    var prevBtn = $('#heroPrev'), nextBtn = $('#heroNext');
+    if (prevBtn) prevBtn.addEventListener('click', function () { heroStep(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { heroStep(1); });
+
+    /* 복제본과 실제 첫 장은 같은 그림이라, 위치만 바꿔 끊김 없이 양쪽으로 이어 넘긴다 */
+    function fixEdge(dx) {
+      if (hero.pos >= hero.n && dx < 0) hero.pos = 0;
+      else if (hero.pos === 0 && dx > 0) hero.pos = hero.n;
+    }
+
+    heroEl.addEventListener('pointerdown', function (e) {
+      if (hero.n < 2) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.target.closest('a, button')) return;
+      hero.drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, dy: 0, axis: '', t0: Date.now() };
+      heroPause();
+    });
+
+    heroEl.addEventListener('pointermove', function (e) {
+      var d = hero.drag;
+      if (!d || e.pointerId !== d.id) return;
+      var dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+      if (!d.axis) {
+        if (Math.abs(dx) < 7 && Math.abs(dy) < 7) return;
+        if (Math.abs(dy) >= Math.abs(dx)) { // 세로로 움직이면 화면 스크롤에 맡긴다
+          hero.drag = null;
+          track.classList.remove('is-dragging');
+          heroStartTimer();
+          return;
+        }
+        d.axis = 'x';
+        track.classList.add('is-dragging');
+        try { heroEl.setPointerCapture(e.pointerId); } catch (err) {}
       }
-    }
-  }
+      d.dx = dx;
+      d.dy = dy;
+      fixEdge(dx);
+      heroApply(dx);
+    }, { passive: true });
 
-  function stepHero(d) { goSlide(state.slide + d, true); }
+    function endDrag(e) {
+      var d = hero.drag;
+      if (!d || (e && e.pointerId !== d.id)) return;
+      hero.drag = null;
+      track.classList.remove('is-dragging');
+      try { if (heroEl.hasPointerCapture(d.id)) heroEl.releasePointerCapture(d.id); } catch (err) {}
+      if (!d.axis) { heroStartTimer(); return; }
 
-  /* 손가락 스와이프·마우스 드래그로 사진 넘기기 */
-  function initHeroGesture() {
-    var hero = document.querySelector('.hero');
-    var strip = $('#heroSlides');
-    if (!hero || !strip) return;
-
-    var START = 8, THRESH = 42, RATIO = 1.15;
-    var active = false, horiz = false, sx = 0, sy = 0;
-
-    function cancel() {
-      active = false; horiz = false; state.heroDrag = false;
-      strip.classList.remove('is-dragging');
-      strip.style.transform = '';
-    }
-
-    function down(x, y, target) {
-      if (target && target.closest('a, button')) return false;
-      if (heroCount() < 2) return false;
-      active = true; horiz = false; sx = x; sy = y;
-      state.heroDrag = true;
-      return true;
+      var w = hero.w || track.clientWidth || 1;
+      var v = d.dx / Math.max(1, Date.now() - d.t0); // px/ms
+      var far = Math.abs(d.dx) > Math.min(w * 0.18, 96);
+      var fast = Math.abs(v) > 0.45 && Math.abs(d.dx) > 20;
+      var target = hero.pos;
+      if (far || fast) target = hero.pos + (d.dx < 0 ? 1 : -1);
+      heroGo(target, true);
     }
 
-    function move(x, y) {
-      if (!active) return;
-      var dx = x - sx, dy = y - sy;
-      if (!horiz) {
-        // 세로로 더 움직이면 스크롤로 보고 놓아준다
-        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { cancel(); return; }
-        if (Math.abs(dx) < START) return;
-        horiz = true;
-        strip.classList.add('is-dragging');
+    heroEl.addEventListener('pointerup', endDrag);
+    heroEl.addEventListener('pointercancel', function (e) {
+      var d = hero.drag;
+      if (!d) return;
+      hero.drag = null;
+      track.classList.remove('is-dragging');
+      heroGo(d.axis ? hero.pos : hero.pos, true);
+    });
+    window.addEventListener('pointerup', endDrag);      // 화면 밖에서 손을 떼도 멈춰 있지 않도록
+    window.addEventListener('blur', function () {
+      if (!hero.drag) return;
+      hero.drag = null;
+      track.classList.remove('is-dragging');
+      heroGo(hero.pos, true);
+    });
+
+    /* 복제본 위치에 도착하면 조용히 첫 장으로 되돌린다 */
+    track.addEventListener('transitionend', function (e) {
+      if (e.target !== track || e.propertyName !== 'transform') return;
+      if (hero.pos >= hero.n) {
+        hero.pos = 0;
+        heroApply(0, true);
+        heroSyncUI();
       }
-      var shift = Math.max(-72, Math.min(72, dx * 0.22));
-      strip.style.transform = 'translate3d(' + shift + 'px,0,0)';
-    }
+    });
 
-    function end(x, y) {
-      if (!active) return;
-      var dx = x - sx, dy = y - sy, wasHoriz = horiz;
-      cancel();
-      if (wasHoriz && Math.abs(dx) > THRESH && Math.abs(dx) > Math.abs(dy) * RATIO) {
-        stepHero(dx < 0 ? 1 : -1);
-      }
+    /* 화면 폭이 바뀌면 한 장 폭도 다시 잰다 */
+    var rzT = 0;
+    function remeasure() {
+      heroMeasure();
+      heroApply(hero.drag ? hero.drag.dx : 0, true);
     }
+    window.addEventListener('resize', function () {
+      clearTimeout(rzT);
+      rzT = setTimeout(remeasure, 120);
+    });
+    window.addEventListener('orientationchange', function () { setTimeout(remeasure, 260); });
+    window.addEventListener('load', remeasure);
 
-    if (window.PointerEvent) {
-      hero.addEventListener('pointerdown', function (e) {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        if (!down(e.clientX, e.clientY, e.target)) return;
-        try { hero.setPointerCapture(e.pointerId); } catch (err) {}
-      });
-      hero.addEventListener('pointermove', function (e) {
-        if (active) move(e.clientX, e.clientY);
-      });
-      hero.addEventListener('pointerup', function (e) {
-        if (active) end(e.clientX, e.clientY);
-      });
-      hero.addEventListener('pointercancel', cancel);
-      // 손을 화면 밖에서 떼도 자동 넘김이 멈춰 있지 않도록
-      window.addEventListener('pointerup', function (e) {
-        if (active) end(e.clientX, e.clientY);
-      });
-      window.addEventListener('blur', function () { if (active) cancel(); });
-    } else {
-      hero.addEventListener('touchstart', function (e) {
-        var t = e.touches[0]; if (t) down(t.clientX, t.clientY, e.target);
-      }, { passive: true });
-      hero.addEventListener('touchmove', function (e) {
-        var t = e.touches[0]; if (t) move(t.clientX, t.clientY);
-      }, { passive: true });
-      hero.addEventListener('touchend', function (e) {
-        var t = e.changedTouches[0]; if (t) end(t.clientX, t.clientY);
-      });
-      hero.addEventListener('touchcancel', cancel);
-      hero.addEventListener('mousedown', function (e) {
-        if (e.button !== 0) return;
-        if (down(e.clientX, e.clientY, e.target)) e.preventDefault();
-      });
-      hero.addEventListener('mousemove', function (e) {
-        if (active) move(e.clientX, e.clientY);
-      });
-      hero.addEventListener('mouseup', function (e) {
-        if (active) end(e.clientX, e.clientY);
-      });
-      hero.addEventListener('mouseleave', function () { if (active) cancel(); });
-    }
-
-    $('#heroPrev').addEventListener('click', function () { stepHero(-1); });
-    $('#heroNext').addEventListener('click', function () { stepHero(1); });
+    /* 다른 탭에 다녀오면 자동 넘김을 새로 시작한다 */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) heroPause();
+      else if (!hero.drag) heroStartTimer();
+    });
   }
 
   /* ---------- 공지 ---------- */
@@ -676,13 +759,18 @@
     $('#reviewNote').textContent = data().reviewNote || '';
 
     var clips = all.filter(function (r) { return r.type === 'clip'; });
-    $('#clipGrid').innerHTML = clips.map(function (c) {
+    $('#clipGrid').innerHTML = '<div class="clip-row">' + clips.map(function (c) {
+      var meta = [];
+      if (c.author && (!c.summary || c.summary.indexOf(c.author) < 0)) meta.push(c.author);
+      if (c.date) meta.push(c.date);
       return '<a class="clip-card" href="' + esc(c.url) + '" target="_blank" rel="noopener">' +
         '<img src="' + esc(c.thumb) + '" alt="" loading="lazy">' +
         '<span class="cp-play" aria-hidden="true">▶</span>' +
         '<span class="cp-cap"><strong>' + esc(c.title) + '</strong>' +
-        '<span>' + esc(c.author || '') + (c.date ? ' · ' + esc(c.date) : '') + '</span></span></a>';
-    }).join('') + '<div class="clip-note"><p>네이버 클립에서 실제 방문객이 올린 짧은 영상입니다. 누르면 그 영상이 바로 열립니다.</p></div>';
+        (c.summary ? '<span class="cp-sum">' + esc(c.summary) + '</span>' : '') +
+        '<span class="cp-meta">' + esc(meta.join(' · ')) + '</span></span></a>';
+    }).join('') + '</div>' +
+      '<div class="clip-note"><p>네이버 클립에서 실제 방문객이 올린 짧은 영상입니다. 누르면 그 영상이 바로 열립니다.</p></div>';
 
     var blogs = all.filter(function (r) { return r.type !== 'clip'; });
     $('#blogGrid').innerHTML = blogs.map(function (b) {
@@ -814,7 +902,7 @@
       if (e.key === 'Escape' && noticeOpen) closeNotices();
     });
 
-    initHeroGesture();
+    bindHeroControls();
 
     $('#catChips').addEventListener('click', function (e) {
       var b = e.target.closest('[data-cat]');
