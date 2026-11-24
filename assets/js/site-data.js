@@ -1042,7 +1042,7 @@ window.SITE_DATA = {
    "id": "c3",
    "type": "clip",
    "show": true,
-   "title": "첫 글램핑인데 새벽 4시까지 수다 떨다 일출까지 봤어요",
+   "title": "구룡포 풀글램핑&펫글램핑, 오션뷰 돔 첫 1박",
    "summary": "#포항펫글램핑 #풀글램핑 · 솔직컨슈머",
    "url": "https://naver.me/FP81nhIN",
    "author": "솔직컨슈머",
